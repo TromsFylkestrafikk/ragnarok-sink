@@ -1,0 +1,29 @@
+{
+  "name": "ragnarok-sink",
+  "version": "0.0.1-dev",
+  "description": "Sink API for Ragnarok",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "husky": "^8.0",
+    "lint-staged": "^13.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/tromsfylkestrafikk/ragnarok-sink.git"
+  },
+  "keywords": [
+    "library"
+  ],
+  "author": "Kåre Slettnes",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/tromsfylkestrafikk/ragnarok-sink/issues"
+  },
+  "homepage": "https://github.com/tromsfylkestrafikk/ragnarok-sink#readme"
+}
