@@ -1,6 +1,6 @@
 <?php
 
-namespace Tromsfylkestrafikk\RagnarokSink;
+namespace TromsFylkestrafikk\RagnarokSink;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -43,7 +43,7 @@ class RagnarokSinkServiceProvider extends ServiceProvider
     private function routeConfiguration()
     {
         return [
-            'namespace'  => "Tromsfylkestrafikk\RagnarokSink\Http\Controllers",
+            'namespace'  => "TromsFylkestrafikk\RagnarokSink\Http\Controllers",
             'middleware' => 'api',
             'prefix'     => 'api'
         ];

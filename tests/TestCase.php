@@ -1,8 +1,8 @@
 <?php
 
-namespace Tromsfylkestrafikk\RagnarokSink\Tests;
+namespace TromsFylkestrafikk\RagnarokSink\Tests;
 
-use Tromsfylkestrafikk\RagnarokSink\RagnarokSinkServiceProvider;
+use TromsFylkestrafikk\RagnarokSink\RagnarokSinkServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase

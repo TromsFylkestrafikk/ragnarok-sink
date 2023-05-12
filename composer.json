@@ -30,12 +30,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Tromsfylkestrafikk\\RagnarokSink\\": "src/"
+            "TromsFylkestrafikk\\RagnarokSink\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tromsfylkestrafikk\\RagnarokSink\\Tests\\":"tests/"
+            "TromsFylkestrafikk\\RagnarokSink\\Tests\\":"tests/"
         }
     },
     "config": {
@@ -45,11 +45,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Tromsfylkestrafikk\\RagnarokSink\\RagnarokSinkServiceProvider"
-            ],
-            "aliases": {
-                "Tromsfylkestrafikk": "Tromsfylkestrafikk\\RagnarokSink\\RagnarokSinkFacade"
-            }
+                "TromsFylkestrafikk\\RagnarokSink\\RagnarokSinkServiceProvider"
+            ]
         }
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace Tromsfylkestrafikk\RagnarokSink\Tests\Feature;
+namespace TromsFylkestrafikk\RagnarokSink\Tests\Feature;
 
-use Tromsfylkestrafikk\RagnarokSink\Tests\TestCase;
+use TromsFylkestrafikk\RagnarokSink\Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
