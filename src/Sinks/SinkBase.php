@@ -2,7 +2,7 @@
 
 namespace TromsFylkestrafikk\RagnarokSink\Sinks;
 
-abstract class Sink
+abstract class SinkBase
 {
     /**
      * Human readable name of sink. Keep it short.
