@@ -3,7 +3,7 @@
 namespace TromsFylkestrafikk\RagnarokSink\Services;
 
 use Exception;
-use Illuminate\Filesystem\Filesystem;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use TromsFylkestrafikk\RagnarokSink\Traits\LogPrintf;
 use TromsFylkestrafikk\RagnarokSink\Models\RawFile;
 
@@ -13,6 +13,11 @@ use TromsFylkestrafikk\RagnarokSink\Models\RawFile;
 class RemoteFile
 {
     use LogPrintf;
+
+    /**
+     * @var Filesystem
+     */
+    protected $lDisk;
 
     /**
      * Remote path where files are to be found.
@@ -29,17 +34,15 @@ class RemoteFile
     protected $lPath = '/';
 
     /**
-     * @param Filesystem $rDisk
-     * @param Filesystem $lDisk
+     * @param string $sinkName Name of sink
+     * @param Filesystem $rDisk Remote disk instance
      *
      * @return void
      */
-    public function __construct(
-        protected string $sinkName,
-        protected Filesystem $rDisk,
-        protected Filesystem $lDisk
-    ) {
+    public function __construct(protected string $sinkName, protected Filesystem $rDisk)
+    {
         $this->logPrintfInit('[RemoteFile]: ');
+        $this->lDisk = app('filesystem')->build(config('ragnarok_sink.local_disk'));
     }
 
     /**
@@ -78,10 +81,44 @@ class RemoteFile
         /** @var RawFile $file */
         $file = RawFile::where('name', $lFilePath)->first();
         if (!$file) {
-            $file = $this->createFile($filename);
+            $file = $this->copyFile($filename);
         } elseif (!$this->lDisk->exists($lFilePath)) {
             $file = $this->refreshFile($file);
         }
+        return $file;
+    }
+
+    /**
+     * Remove local file from DB and disk.
+     *
+     * @param string $filename
+     */
+    public function rmLocalFile($filename)
+    {
+        $lFilePath = $this->lFilePath($filename);
+        $file = RawFile::where('name', $lFilePath)->first();
+        if (!$file) {
+            return;
+        }
+        if ($this->lDisk->exists($file->name)) {
+            $this->lDisk->delete($file->name);
+        }
+        $file->delete();
+        return $this;
+    }
+
+    /**
+     * @param string $filename
+     * @return RawFile|null
+     */
+    public function resetImportStatus($filename)
+    {
+        $file = RawFile::where('name', $this->lFilePath($filename))->first();
+        if (!$file) {
+            return null;
+        }
+        $file->import_status = 'new';
+        $file->save();
         return $file;
     }
 
@@ -149,15 +186,15 @@ class RemoteFile
     }
 
     /**
-     * Create a new file model for given file.
+     * Copy file from remote and create new file model.
      *
      * @param string $filename
      *
      * @return RawFile|null
      */
-    protected function createFile($filename)
+    protected function copyFile($filename)
     {
-        $copied = $this->copyFile($filename);
+        $copied = $this->copyFileContent($filename);
         if (!$copied) {
             return null;
         }
@@ -165,7 +202,8 @@ class RemoteFile
         $lFilePath = $this->lFilePath($filename);
         /** @var RawFile $file */
         $file = RawFile::create([
-            'file_name' => $lFilePath,
+            'sink' => $this->sinkName,
+            'name' => $lFilePath,
             'checksum' => md5($this->lDisk->get($lFilePath)),
             'import_status' => 'new',
             'import_msg' => null,
@@ -180,7 +218,7 @@ class RemoteFile
      *
      * @return bool True if success
      */
-    protected function copyFile($filename)
+    protected function copyFileContent($filename)
     {
         $content = $this->getRemoteFileContent($filename);
         if (!$content) {

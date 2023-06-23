@@ -2,6 +2,8 @@
 
 namespace TromsFylkestrafikk\RagnarokSink\Sinks;
 
+use Illuminate\Filesystem\Filesystem;
+
 abstract class SinkBase
 {
     /**
@@ -11,23 +13,22 @@ abstract class SinkBase
      */
     public $name;
 
+    public function __construct(protected Filesystem $lDisk)
+    {
+        //
+    }
+
     /**
      * Fetch raw, unprocessed data from sink to local storage.
      *
      * @return bool True on success.
      */
-    public function fetch(): bool
-    {
-        return true;
-    }
+    abstract public function fetch(): bool;
 
     /**
      * Import one chunk from sink.
      *
      * @return bool
      */
-    public function import(): bool
-    {
-        return true;
-    }
+    abstract public function import(): bool;
 }
