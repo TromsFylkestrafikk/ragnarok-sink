@@ -13,17 +13,15 @@ abstract class SinkBase
      */
     public $name;
 
-    public function __construct(protected Filesystem $lDisk)
-    {
-        //
-    }
-
     /**
      * Fetch raw, unprocessed data from sink to local storage.
      *
      * @return bool True on success.
      */
-    abstract public function fetch(): bool;
+    public function fetch(): bool
+    {
+        return true;
+    }
 
     /**
      * Import one chunk from sink.

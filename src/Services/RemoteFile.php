@@ -123,6 +123,34 @@ class RemoteFile
     }
 
     /**
+     * @return $this
+     */
+    public function setRemoteDisk(Filesystem $disk)
+    {
+        $this->rDisk = $disk;
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setLocalDisk(Filesystem $disk)
+    {
+        $this->lDisk = $disk;
+        return $this;
+    }
+
+    public function getLocalDisk(): Filesystem
+    {
+        return $this->lDisk;
+    }
+
+    public function getRemoteDisk(): Filesystem
+    {
+        return $this->rDisk;
+    }
+
+    /**
      * Get remote file path of given file.
      *
      * @param string $filename
@@ -227,6 +255,11 @@ class RemoteFile
         return $this->lDisk->put($filename, $content);
     }
 
+    /**
+     * @param string $filename
+     *
+     * @return string|null
+     */
     protected function getRemoteFileContent($filename)
     {
         $rFilePath = $this->rFilePath($filename);
