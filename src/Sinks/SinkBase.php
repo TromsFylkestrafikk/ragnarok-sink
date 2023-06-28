@@ -2,7 +2,6 @@
 
 namespace TromsFylkestrafikk\RagnarokSink\Sinks;
 
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Carbon;
 
 /**
@@ -59,14 +58,24 @@ abstract class SinkBase
         $fromDate = $this->getFromDate();
 
         $ret = [];
-        while (true) {
-            $ret[] = $current->format('YYYY-MM-DD');
+        for ($count = 0; $count < $amount; $count++) {
+            $ret[] = $current->format('Y-m-d');
             $current->subtract(1, 'day');
             if ($current->isBefore($fromDate)) {
                 break;
             }
         }
         return $ret;
+    }
+
+    /**
+     * Get total number of chunks from sink.
+     *
+     * @return int
+     */
+    public function chunksCount(): int
+    {
+        return $this->getFromDate()->daysUntil($this->getToDate())->count();
     }
 
     /**
