@@ -43,27 +43,22 @@ abstract class SinkBase
     abstract public function getToDate(): Carbon;
 
     /**
-     * Get a list of chunk identifiers from sink. Usually dates.
+     * Get full a list of chunk identifiers from sink. Usually dates.
      *
-     * Each chunk is an isolated set of data from sink. Chunk IDs
-     * should be in descending chunk order.
+     * IDs must be strings, order-able and in descending order.
      *
-     * @param mixed $mostRecent The most recent chunk to start from
-     * @param int $amount Number of chunks to retrieve backwards.
+     * Each chunk is an isolated set of data from sink.
      * @return array
      */
-    public function getChunkIds($mostRecent = null, $amount = 20): array
+    public function getChunkIds(): array
     {
-        $current = $mostRecent ? new Carbon($mostRecent) : $this->getToDate();
         $fromDate = $this->getFromDate();
+        $current = $this->getToDate();
 
         $ret = [];
-        for ($count = 0; $count < $amount; $count++) {
+        while ($current->isAfter($fromDate) || $current->isSameDay($fromDate)) {
             $ret[] = $current->format('Y-m-d');
             $current->subtract(1, 'day');
-            if ($current->isBefore($fromDate)) {
-                break;
-            }
         }
         return $ret;
     }
