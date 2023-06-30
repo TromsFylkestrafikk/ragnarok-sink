@@ -34,12 +34,12 @@ class RemoteFile
     protected $lPath = '/';
 
     /**
-     * @param string $sinkName Name of sink
+     * @param string $sinkId Name of sink
      * @param Filesystem $rDisk Remote disk instance
      *
      * @return void
      */
-    public function __construct(protected string $sinkName, protected Filesystem $rDisk)
+    public function __construct(protected string $sinkId, protected Filesystem $rDisk)
     {
         $this->logPrintfInit('[RemoteFile]: ');
         $this->lDisk = app('filesystem')->build(config('ragnarok_sink.local_disk'));
@@ -169,7 +169,7 @@ class RemoteFile
      */
     public function lFilePath($filename)
     {
-        return implode('/', [$this->sinkName, rtrim($this->lPath, '/'), $filename]);
+        return implode('/', [$this->sinkId, rtrim($this->lPath, '/'), $filename]);
     }
 
     /**
@@ -230,7 +230,7 @@ class RemoteFile
         $lFilePath = $this->lFilePath($filename);
         /** @var RawFile $file */
         $file = RawFile::create([
-            'sink' => $this->sinkName,
+            'sink_id' => $this->sinkId,
             'name' => $lFilePath,
             'checksum' => md5($this->lDisk->get($lFilePath)),
             'import_status' => 'new',

@@ -32,7 +32,7 @@ use Illuminate\Database\Eloquent\Model;
 class RawFile extends Model
 {
     protected $table = 'ragnarok_files';
-    protected $fillable = ['name', 'checksum', 'date', 'import_status', 'import_msg'];
+    protected $fillable = ['sink_id', 'name', 'checksum', 'date', 'import_status', 'import_msg'];
 
     public function getIsImportedAttribute()
     {

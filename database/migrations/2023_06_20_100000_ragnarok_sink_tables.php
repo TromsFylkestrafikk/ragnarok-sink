@@ -10,13 +10,13 @@ class RagnarokSinkTables extends Migration
     {
         Schema::create('ragnarok_files', function (Blueprint $table) {
             $table->increments('id');
-            $table->char('sink', 64)->comment('Sink that owns this file');
+            $table->char('sink_id', 64)->comment('Sink that owns this file');
             $table->char('name', 128)->comment('Name of file relative to disk');
             $table->char('checksum', 128)->nullable()->comment('Md5 sum of file');
             $table->enum('import_status', ['new', 'updated', 'importing', 'imported', 'empty', 'notice', 'failed'])->default('new')->comment("Current import status of file.");
             $table->text('import_msg')->nullable()->comment("Message from last import, if any");
             $table->timestamps();
-            $table->unique(['sink', 'name']);
+            $table->unique(['sink_id', 'name']);
         });
     }
 

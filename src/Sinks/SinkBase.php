@@ -10,14 +10,14 @@ use Illuminate\Support\Carbon;
 abstract class SinkBase
 {
     /**
-     * Machine readable name of sink in lower_snake_case style.
+     * Machine readable ID of sink. Preferably in lower_snake_case
      *
      * This is the sink ID, so make sure it doesn't collide with any other
      * Ragnarok sinks. Also, changing this causes it to appear as a 'new' sink.
      *
      * @var string
      */
-    public $name = "example";
+    public $id = "example";
 
     /**
      * Human readable name of sink.
