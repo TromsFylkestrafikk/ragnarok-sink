@@ -14,7 +14,7 @@ class RagnarokSinkServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/ragnarok_sink.php', 'ragnaroksink');
+        $this->mergeConfigFrom(__DIR__ . '/../config/ragnarok_sink.php', 'ragnarok_sink');
         // Register facade
         // $this->app->singleton('ragnaroksink', function () {
         //     return new RagnarokSink();

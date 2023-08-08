@@ -34,7 +34,7 @@ abstract class SinkBase
     abstract public function getFromDate(): Carbon;
 
     /**
-     * How recently data be fetched.
+     * Most recent data to be imported.
      *
      * Usually this is today or yesterday.
      *
@@ -87,9 +87,11 @@ abstract class SinkBase
     /**
      * Fetch raw, unprocessed data from sink to local storage.
      *
+     * @param array $ids ID or list of IDs to fetch.
+     *
      * @return bool True on success.
      */
-    public function fetch(): bool
+    public function fetch($ids = []): bool
     {
         return true;
     }
