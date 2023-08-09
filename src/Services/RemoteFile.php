@@ -169,7 +169,12 @@ class RemoteFile
      */
     public function lFilePath($filename)
     {
-        return implode('/', [$this->sinkId, rtrim($this->lPath, '/'), $filename]);
+        $lDir = $this->getLocalDir();
+        // Make sure local directory exists
+        if (!$this->lDisk->exists($lDir)) {
+            $this->lDisk->makeDirectory($lDir);
+        }
+        return implode('/', [$lDir, ltrim($filename)]);
     }
 
     /**
@@ -214,6 +219,21 @@ class RemoteFile
     }
 
     /**
+     * Get local directory path
+     *
+     * @return string
+     */
+    public function getLocalDir()
+    {
+        $walk = ['/' . $this->sinkId];
+        $sub = rtrim($this->lPath, '/');
+        if (strlen($sub)) {
+            $walk[] = $sub;
+        }
+        return implode('/', $walk);
+    }
+
+    /**
      * Copy file from remote and create new file model.
      *
      * @param string $filename
@@ -250,9 +270,10 @@ class RemoteFile
     {
         $content = $this->getRemoteFileContent($filename);
         if (!$content) {
+            $this->notice("No content found in remote file: '%s'", $filename);
             return false;
         }
-        return $this->lDisk->put($filename, $content);
+        return $this->lDisk->put($this->lFilePath($filename), $content);
     }
 
     /**
@@ -264,6 +285,7 @@ class RemoteFile
     {
         $rFilePath = $this->rFilePath($filename);
         if (!$this->rDisk->exists($rFilePath)) {
+            $this->notice('Remote filepath does not exist: %s', $rFilePath);
             return null;
         }
         return $this->rDisk->get($rFilePath);
