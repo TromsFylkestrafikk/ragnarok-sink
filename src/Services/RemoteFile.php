@@ -243,10 +243,6 @@ class RemoteFile
     protected function copyFile($filename)
     {
         $copied = $this->copyFileContent($filename);
-        if (!$copied) {
-            return null;
-        }
-
         $lFilePath = $this->lFilePath($filename);
         /** @var RawFile $file */
         $file = RawFile::create([
@@ -264,16 +260,18 @@ class RemoteFile
      *
      * @param string $filename
      *
-     * @return bool True if success
+     * @return $this
      */
     protected function copyFileContent($filename)
     {
         $content = $this->getRemoteFileContent($filename);
         if (!$content) {
-            $this->notice("No content found in remote file: '%s'", $filename);
-            return false;
+            throw new Exception(sprintf("Unable to read content in remote file: '%s'", $filename));
         }
-        return $this->lDisk->put($this->lFilePath($filename), $content);
+        if (!$this->lDisk->put($this->lFilePath($filename), $content)) {
+            throw new Exception(sprintf("Unable to write content to local disk: '%s'", $filename));
+        }
+        return $this;
     }
 
     /**
@@ -285,8 +283,7 @@ class RemoteFile
     {
         $rFilePath = $this->rFilePath($filename);
         if (!$this->rDisk->exists($rFilePath)) {
-            $this->notice('Remote filepath does not exist: %s', $rFilePath);
-            return null;
+            throw new Exception(sprintf('Remote filepath does not exist: %s', $rFilePath));
         }
         return $this->rDisk->get($rFilePath);
     }

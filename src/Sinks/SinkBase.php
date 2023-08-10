@@ -87,11 +87,11 @@ abstract class SinkBase
     /**
      * Fetch raw, unprocessed data from sink to local storage.
      *
-     * @param array $ids ID or list of IDs to fetch.
+     * @param string $id Chunk ID to fetch data for.
      *
      * @return bool True on success.
      */
-    public function fetch($ids = []): bool
+    public function fetch($id): bool
     {
         return true;
     }
