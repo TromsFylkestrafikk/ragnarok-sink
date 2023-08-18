@@ -15,11 +15,6 @@ class RemoteFile
     use LogPrintf;
 
     /**
-     * @var Filesystem
-     */
-    protected $lDisk;
-
-    /**
      * Remote path where files are to be found.
      *
      * @var string
@@ -27,11 +22,9 @@ class RemoteFile
     protected $rPath = '/';
 
     /**
-     * Local path where files are to be found.
-     *
-     * @var string
+     * @var LocalFiles
      */
-    protected $lPath = '/';
+    protected $local = null;
 
     /**
      * @param string $sinkId Name of sink
@@ -42,27 +35,7 @@ class RemoteFile
     public function __construct(protected string $sinkId, protected Filesystem $rDisk)
     {
         $this->logPrintfInit('[RemoteFile]: ');
-        $this->lDisk = app('filesystem')->build(config('ragnarok_sink.local_disk'));
-    }
-
-    /**
-     * @param string $path
-     * @return $this
-     */
-    public function setRemotePath($path)
-    {
-        $this->rPath = $path;
-        return $this;
-    }
-
-    /**
-     * @param string $path
-     * @return $this
-     */
-    public function setLocalPath($path = '/')
-    {
-        $this->lPath = $path;
-        return $this;
+        $this->local = new LocalFiles($sinkId);
     }
 
     /**
@@ -77,77 +50,21 @@ class RemoteFile
      */
     public function getFile($filename)
     {
-        $lFilePath = $this->lFilePath($filename);
-        /** @var RawFile $file */
-        $file = RawFile::where('name', $lFilePath)->first();
+        $file = $this->local->getFile($filename);
         if (!$file) {
             $file = $this->copyFile($filename);
-        } elseif (!$this->lDisk->exists($lFilePath)) {
-            $file = $this->refreshFile($file);
         }
         return $file;
     }
 
     /**
-     * Remove local file from DB and disk.
-     *
-     * @param string $filename
-     */
-    public function rmLocalFile($filename)
-    {
-        $lFilePath = $this->lFilePath($filename);
-        $file = RawFile::where('name', $lFilePath)->first();
-        if (!$file) {
-            return;
-        }
-        if ($this->lDisk->exists($file->name)) {
-            $this->lDisk->delete($file->name);
-        }
-        $file->delete();
-        return $this;
-    }
-
-    /**
-     * @param string $filename
-     * @return RawFile|null
-     */
-    public function resetImportStatus($filename)
-    {
-        $file = RawFile::where('name', $this->lFilePath($filename))->first();
-        if (!$file) {
-            return null;
-        }
-        $file->import_status = 'new';
-        $file->save();
-        return $file;
-    }
-
-    /**
+     * @param string $path
      * @return $this
      */
-    public function setRemoteDisk(Filesystem $disk)
+    public function setRemotePath($path)
     {
-        $this->rDisk = $disk;
+        $this->rPath = $path;
         return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLocalDisk(Filesystem $disk)
-    {
-        $this->lDisk = $disk;
-        return $this;
-    }
-
-    public function getLocalDisk(): Filesystem
-    {
-        return $this->lDisk;
-    }
-
-    public function getRemoteDisk(): Filesystem
-    {
-        return $this->rDisk;
     }
 
     /**
@@ -162,78 +79,6 @@ class RemoteFile
     }
 
     /**
-     * Get local file path of given file.
-     *
-     * @param string $filename
-     * @return string
-     */
-    public function lFilePath($filename)
-    {
-        $lDir = $this->getLocalDir();
-        // Make sure local directory exists
-        if (!$this->lDisk->exists($lDir)) {
-            $this->lDisk->makeDirectory($lDir);
-        }
-        return implode('/', [$lDir, ltrim($filename)]);
-    }
-
-    /**
-     * Check existence and checksum for given local file.
-     *
-     * @return bool
-     */
-    public function localChecksOut(RawFile $file)
-    {
-        return $this->lDisk->exists($file->name) && md5($this->lDisk->get($file->name)) === $file->checksum;
-    }
-
-    /**
-     * Compare local file with remote, download and update status.
-     *
-     * @param RawFile $file
-     *
-     * @return RawFile
-     */
-    public function refreshFile(RawFile $file)
-    {
-        $newContent = $this->getRemoteFileContent($file->name);
-        $existsLocal = $this->lDisk->exists($file->name);
-        if (!$newContent) {
-            // Server might be down. Not touching state of file unless the local
-            // file is missing.
-            if (!$existsLocal) {
-                throw new Exception("Missing both local and remote file.");
-            }
-            return $file;
-        }
-        $newChecksum = md5($newContent);
-        if ($newChecksum !== $file->checksum || !$existsLocal) {
-            $this->lDisk->put($file->name, $newContent);
-            if ($newChecksum !== $file->checksum) {
-                $file->checksum = $newChecksum;
-                $file->import_status = 'updated';
-                $file->save();
-            }
-        }
-        return $file;
-    }
-
-    /**
-     * Get local directory path
-     *
-     * @return string
-     */
-    public function getLocalDir()
-    {
-        $walk = ['/' . $this->sinkId];
-        $sub = rtrim($this->lPath, '/');
-        if (strlen($sub)) {
-            $walk[] = $sub;
-        }
-        return implode('/', $walk);
-    }
-
-    /**
      * Copy file from remote and create new file model.
      *
      * @param string $filename
@@ -242,36 +87,8 @@ class RemoteFile
      */
     protected function copyFile($filename)
     {
-        $copied = $this->copyFileContent($filename);
-        $lFilePath = $this->lFilePath($filename);
-        /** @var RawFile $file */
-        $file = RawFile::create([
-            'sink_id' => $this->sinkId,
-            'name' => $lFilePath,
-            'checksum' => md5($this->lDisk->get($lFilePath)),
-            'import_status' => 'new',
-            'import_msg' => null,
-        ]);
-        return $file;
-    }
-
-    /**
-     * Copies file from remote to local
-     *
-     * @param string $filename
-     *
-     * @return $this
-     */
-    protected function copyFileContent($filename)
-    {
         $content = $this->getRemoteFileContent($filename);
-        if (!$content) {
-            throw new Exception(sprintf("Unable to read content in remote file: '%s'", $filename));
-        }
-        if (!$this->lDisk->put($this->lFilePath($filename), $content)) {
-            throw new Exception(sprintf("Unable to write content to local disk: '%s'", $filename));
-        }
-        return $this;
+        return $this->local->toFile($filename, $content);
     }
 
     /**
