@@ -8,18 +8,28 @@ use Illuminate\Support\Facades\Route;
 class RagnarokSinkServiceProvider extends ServiceProvider
 {
     /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->mergeConfigFrom(__DIR__ . '/../config/ragnarok_sink.php', 'ragnarok_sink');
+        // Register facade
+        // $this->app->singleton('ragnaroksink', function () {
+        //     return new RagnarokSink();
+        // });
+    }
+
+    /**
      * Bootstrap any application services.
      *
      * @return void
      */
     public function boot()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/ragnarok_sink.php', 'ragnaroksink');
-
         $this->publishConfig();
-
-        // $this->loadViewsFrom(__DIR__.'/resources/views', 'ragnaroksink');
-        // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         // $this->registerRoutes();
     }
 
@@ -45,21 +55,8 @@ class RagnarokSinkServiceProvider extends ServiceProvider
         return [
             'namespace'  => "TromsFylkestrafikk\RagnarokSink\Http\Controllers",
             'middleware' => 'api',
-            'prefix'     => 'api'
+            'prefix'     => 'api',
         ];
-    }
-
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        // Register facade
-        // $this->app->singleton('ragnaroksink', function () {
-        //     return new RagnarokSink();
-        // });
     }
 
     /**
