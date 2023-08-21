@@ -73,7 +73,7 @@ class RemoteFile
      * @param string $filename
      * @return string
      */
-    public function rFilePath($filename)
+    public function getRemoteFilePath($filename)
     {
         return rtrim($this->rPath, '/') . '/' . $filename;
     }
@@ -98,7 +98,7 @@ class RemoteFile
      */
     protected function getRemoteFileContent($filename)
     {
-        $rFilePath = $this->rFilePath($filename);
+        $rFilePath = $this->getRemoteFilePath($filename);
         if (!$this->rDisk->exists($rFilePath)) {
             throw new Exception(sprintf('Remote filepath does not exist: %s', $rFilePath));
         }

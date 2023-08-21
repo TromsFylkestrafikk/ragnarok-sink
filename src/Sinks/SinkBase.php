@@ -46,8 +46,8 @@ abstract class SinkBase
      * Get full a list of chunk identifiers from sink. Usually dates.
      *
      * IDs must be strings, order-able and in descending order.
-     *
      * Each chunk is an isolated set of data from sink.
+     *
      * @return array
      */
     public function getChunkIds(): array

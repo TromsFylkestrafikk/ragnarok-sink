@@ -12,6 +12,7 @@ class RagnarokSinkTables extends Migration
             $table->increments('id');
             $table->char('sink_id', 64)->comment('Sink that owns this file');
             $table->char('name', 128)->comment('Name of file relative to disk');
+            $table->unsignedBigInteger('size')->default(0)->comment('File size in bytes');
             $table->char('checksum', 128)->nullable()->comment('Md5 sum of file');
             $table->enum('import_status', ['new', 'updated', 'importing', 'imported', 'empty', 'notice', 'failed'])->default('new')->comment("Current import status of file.");
             $table->text('import_msg')->nullable()->comment("Message from last import, if any");

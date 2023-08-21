@@ -39,12 +39,14 @@ class LocalFiles
     public function toFile($filename, $content)
     {
         $checksum = md5($content);
+        $size = strlen($content);
         $filePath = $this->getFilePath($filename);
         $this->disk->put($filePath, $content);
 
         $existing = $this->getFile($filename);
         if ($existing && $existing->checksum !== $checksum) {
             $existing->fill([
+                'size' => $size,
                 'checksum' => $checksum,
                 'import_status' => 'updated',
                 'import_msg' => null,
@@ -54,6 +56,7 @@ class LocalFiles
         return $existing ?: RawFile::create([
             'sink_id' => $this->sinkId,
             'name' => $filePath,
+            'size' => $size,
             'checksum' => $checksum,
         ]);
     }
