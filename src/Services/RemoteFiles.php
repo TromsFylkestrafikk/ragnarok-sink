@@ -10,7 +10,7 @@ use TromsFylkestrafikk\RagnarokSink\Models\RawFile;
 /**
  * Service for syncing, copying, maintaining remote files with local files.
  */
-class RemoteFile
+class RemoteFiles
 {
     use LogPrintf;
 
