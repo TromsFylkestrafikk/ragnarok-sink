@@ -48,8 +48,6 @@ class LocalFiles
             $existing->fill([
                 'size' => $size,
                 'checksum' => $checksum,
-                'import_status' => 'updated',
-                'import_msg' => null,
             ]);
             $existing->save();
         }
