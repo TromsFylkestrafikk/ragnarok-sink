@@ -97,6 +97,18 @@ abstract class SinkBase
     }
 
     /**
+     * Remove chunk from local storage.
+     *
+     * @param string $id Chunk ID
+     *
+     * @return bool True on success
+     */
+    public function removeChunk($id): bool
+    {
+        return true;
+    }
+
+    /**
      * Import one chunk from sink.
      *
      * @return bool
