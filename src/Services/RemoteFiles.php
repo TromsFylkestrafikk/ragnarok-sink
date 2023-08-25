@@ -58,6 +58,16 @@ class RemoteFiles
     }
 
     /**
+     * Get service for managing local files.
+     *
+     * @return LocalFiles
+     */
+    public function getLocal()
+    {
+        return $this->local;
+    }
+
+    /**
      * @param string $path
      * @return $this
      */

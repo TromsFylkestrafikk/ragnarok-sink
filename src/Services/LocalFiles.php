@@ -75,12 +75,14 @@ class LocalFiles
      * Remove file from DB and disk.
      *
      * @param string $filename
+     *
+     * @return $this
      */
     public function rmFile($filename)
     {
         $file = $this->getFile($filename);
         if (!$file) {
-            return;
+            return $this;
         }
         if ($this->disk->exists($file->name)) {
             $this->disk->delete($file->name);
