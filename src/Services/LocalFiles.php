@@ -72,7 +72,20 @@ class LocalFiles
     }
 
     /**
-     * Remove file from DB and disk.
+     * @param string|RawFile $file
+     *
+     * @return string
+     */
+    public function getContents($file)
+    {
+        if (is_string($file)) {
+            $file = $this->getFile($file);
+        }
+        return $this->disk->get($file->name);
+    }
+
+    /**
+     * remove file from DB and disk.
      *
      * @param string $filename
      *

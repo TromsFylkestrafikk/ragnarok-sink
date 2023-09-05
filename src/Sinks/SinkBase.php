@@ -111,7 +111,18 @@ abstract class SinkBase
     /**
      * Import one chunk from sink.
      *
+     * @param string $id Chunk ID.
+     *
      * @return bool
      */
-    abstract public function import(): bool;
+    abstract public function import($id): bool;
+
+    /**
+     * Remove imported data from DB
+     *
+     * @param string $id Chunk ID
+     *
+     * @return bool True on success
+     */
+    abstract public function deleteImport($id): bool;
 }
