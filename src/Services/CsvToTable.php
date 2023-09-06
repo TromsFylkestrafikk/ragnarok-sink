@@ -2,12 +2,12 @@
 
 namespace TromsFylkestrafikk\RagnarokSink\Services;
 
-use TromsFylkestrafikk\RagnarokSink\Traits\LogPrintf;
-use TromsFylkestrafikk\RagnarokSink\Services\CsvToTable\CsvColumn;
 use Closure;
 use Exception;
 use League\Csv\CharsetConverter;
 use League\Csv\Reader;
+use TromsFylkestrafikk\RagnarokSink\Services\CsvToTable\CsvColumn;
+use TromsFylkestrafikk\RagnarokSink\Traits\LogPrintf;
 
 /**
  * Map content of a Csv file to a database table
@@ -105,7 +105,7 @@ class CsvToTable
         $this->csvFile = $csvFile;
         $this->table = $table;
         $this->uniqueCols = $uniqueCols;
-        $this->logPrintfInit(sprintf("[CsvToTable:%s]: ", basename($csvFile)));
+        $this->logPrintfInit("[CsvToTable:%s]: ", basename($csvFile));
     }
 
     /**

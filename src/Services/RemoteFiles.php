@@ -67,6 +67,11 @@ class RemoteFiles
         return $this->local;
     }
 
+    public function getDisk(): Filesystem
+    {
+        return $this->rDisk;
+    }
+
     /**
      * @param string $path
      * @return $this

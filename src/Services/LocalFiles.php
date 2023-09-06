@@ -84,6 +84,11 @@ class LocalFiles
         return $this->disk->get($file->name);
     }
 
+    public function getDisk(): Filesystem
+    {
+        return $this->disk;
+    }
+
     /**
      * remove file from DB and disk.
      *
