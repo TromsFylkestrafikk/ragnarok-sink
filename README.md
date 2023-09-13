@@ -8,7 +8,7 @@ to be available in Ragnarok.
 ## Install
 
 ```bash
-composer require tromsfylkestrafikk/ragnarok-sink
+composer require ragnarok/sink
 ```
 
 ## Contributing

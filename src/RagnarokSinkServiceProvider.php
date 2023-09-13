@@ -1,6 +1,6 @@
 <?php
 
-namespace TromsFylkestrafikk\RagnarokSink;
+namespace Ragnarok\Sink;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -53,7 +53,7 @@ class RagnarokSinkServiceProvider extends ServiceProvider
     private function routeConfiguration()
     {
         return [
-            'namespace'  => "TromsFylkestrafikk\RagnarokSink\Http\Controllers",
+            'namespace'  => "Ragnarok\Sink\Http\Controllers",
             'middleware' => 'api',
             'prefix'     => 'api',
         ];
@@ -68,7 +68,7 @@ class RagnarokSinkServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../config/RagnarokSink.php' => config_path('ragnarok_sink.php'),
+                __DIR__ . '/../config/ragnarok_sink.php' => config_path('ragnarok_sink.php'),
             ], 'config');
         }
     }

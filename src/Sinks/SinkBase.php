@@ -1,6 +1,6 @@
 <?php
 
-namespace TromsFylkestrafikk\RagnarokSink\Sinks;
+namespace Ragnarok\Sink\Sinks;
 
 use Illuminate\Support\Carbon;
 

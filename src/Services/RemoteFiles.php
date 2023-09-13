@@ -1,11 +1,11 @@
 <?php
 
-namespace TromsFylkestrafikk\RagnarokSink\Services;
+namespace Ragnarok\Sink\Services;
 
 use Exception;
 use Illuminate\Contracts\Filesystem\Filesystem;
-use TromsFylkestrafikk\RagnarokSink\Traits\LogPrintf;
-use TromsFylkestrafikk\RagnarokSink\Models\RawFile;
+use Ragnarok\Sink\Traits\LogPrintf;
+use Ragnarok\Sink\Models\RawFile;
 
 /**
  * Service for syncing, copying, maintaining remote files with local files.

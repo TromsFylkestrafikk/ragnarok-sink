@@ -1,7 +1,8 @@
 {
-    "name": "tromsfylkestrafikk/ragnarok-sink",
+    "name": "ragnarok/sink",
     "description": "Sink API for Ragnarok",
     "type": "library",
+    "homepage": "https://github.com/tromsfylkestrafikk/ragnarok-sink",
     "license": "GPL-3.0-or-later",
     "keywords": [
 		"library"
@@ -31,12 +32,12 @@
     },
     "autoload": {
         "psr-4": {
-            "TromsFylkestrafikk\\RagnarokSink\\": "src/"
+            "Ragnarok\\Sink\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "TromsFylkestrafikk\\RagnarokSink\\Tests\\":"tests/"
+            "Ragnarok\\Sink\\Tests\\":"tests/"
         }
     },
     "config": {
@@ -46,7 +47,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "TromsFylkestrafikk\\RagnarokSink\\RagnarokSinkServiceProvider"
+                "Ragnarok\\Sink\\RagnarokSinkServiceProvider"
             ]
         }
     }

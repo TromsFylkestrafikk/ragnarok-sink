@@ -1,13 +1,13 @@
 <?php
 
-namespace TromsFylkestrafikk\RagnarokSink\Services;
+namespace Ragnarok\Sink\Services;
 
 use Closure;
 use Exception;
 use League\Csv\CharsetConverter;
 use League\Csv\Reader;
-use TromsFylkestrafikk\RagnarokSink\Services\CsvToTable\CsvColumn;
-use TromsFylkestrafikk\RagnarokSink\Traits\LogPrintf;
+use Ragnarok\Sink\Services\CsvToTable\CsvColumn;
+use Ragnarok\Sink\Traits\LogPrintf;
 
 /**
  * Map content of a Csv file to a database table

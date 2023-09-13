@@ -1,6 +1,6 @@
 <?php
 
-namespace TromsFylkestrafikk\RagnarokSink\Traits;
+namespace Ragnarok\Sink\Traits;
 
 use Illuminate\Support\Facades\Log;
 

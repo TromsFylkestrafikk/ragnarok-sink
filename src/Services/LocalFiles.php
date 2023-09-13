@@ -1,10 +1,9 @@
 <?php
 
-namespace TromsFylkestrafikk\RagnarokSink\Services;
+namespace Ragnarok\Sink\Services;
 
-use Exception;
 use Illuminate\Contracts\Filesystem\Filesystem;
-use TromsFylkestrafikk\RagnarokSink\Models\RawFile;
+use Ragnarok\Sink\Models\RawFile;
 
 /**
  * Helper class to manage data in local files.

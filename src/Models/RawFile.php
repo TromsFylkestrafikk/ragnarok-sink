@@ -1,11 +1,11 @@
 <?php
 
-namespace TromsFylkestrafikk\RagnarokSink\Models;
+namespace Ragnarok\Sink\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * TromsFylkestrafikk\RagnarokSink\Models\RawFile
+ * Ragnarok\Sink\Models\RawFile
  *
  * @property int $id
  * @property string $sink_id Sink that owns this file

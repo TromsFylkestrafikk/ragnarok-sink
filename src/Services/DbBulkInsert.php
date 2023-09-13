@@ -1,6 +1,6 @@
 <?php
 
-namespace TromsFylkestrafikk\RagnarokSink\Services;
+namespace Ragnarok\Sink\Services;
 
 use InvalidArgumentException;
 use Illuminate\Support\Facades\DB;

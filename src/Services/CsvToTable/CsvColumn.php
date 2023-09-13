@@ -1,6 +1,6 @@
 <?php
 
-namespace TromsFylkestrafikk\RagnarokSink\Services\CsvToTable;
+namespace Ragnarok\Sink\Services\CsvToTable;
 
 class CsvColumn
 {
