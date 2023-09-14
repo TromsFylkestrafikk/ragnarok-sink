@@ -27,6 +27,16 @@ abstract class SinkBase
     public $title = "Example";
 
     /**
+     * Cron entry for when to perform new imports.
+     *
+     * Optional. This is a normal unix cron entry. e.g. '45 03 * * *' is run
+     * every night at 03:45.
+     *
+     * @var string
+     */
+    public $cron = null;
+
+    /**
      * Start date of data to import.
      *
      * @return Carbon
