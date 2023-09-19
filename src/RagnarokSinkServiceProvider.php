@@ -4,9 +4,14 @@ namespace Ragnarok\Sink;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Ragnarok\Sink\Services\Registrar;
 
 class RagnarokSinkServiceProvider extends ServiceProvider
 {
+    public $singletons = [
+        'ragnarok.sink.registrar' => Registrar::class,
+    ];
+
     /**
      * Register any application services.
      *
@@ -15,10 +20,6 @@ class RagnarokSinkServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/ragnarok_sink.php', 'ragnarok_sink');
-        // Register facade
-        // $this->app->singleton('ragnaroksink', function () {
-        //     return new RagnarokSink();
-        // });
     }
 
     /**
