@@ -17,14 +17,14 @@ abstract class SinkBase
      *
      * @var string
      */
-    public $id = "example";
+    public static $id = "example";
 
     /**
-     * Human readable name of sink.
+     * Title of sink for presentational purpose.
      *
      * @var string
      */
-    public $title = "Example";
+    public static $title = "Example";
 
     /**
      * Cron entry for when to perform new imports.
