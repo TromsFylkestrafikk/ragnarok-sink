@@ -6,6 +6,9 @@ use Illuminate\Support\Carbon;
 
 /**
  * Foundation class for Ragnarok sinks.
+ *
+ * There should be no need to handle exceptions while implementing this API. The
+ * Ragnarok framework will handle them globally.
  */
 abstract class SinkBase
 {
@@ -97,6 +100,8 @@ abstract class SinkBase
     /**
      * Fetch raw, unprocessed data from sink to local storage.
      *
+     * IMPORTANT: Allow exceptions to pass through this operation!
+     *
      * @param string $id Chunk ID to fetch data for.
      *
      * @return bool True on success.
@@ -108,6 +113,8 @@ abstract class SinkBase
 
     /**
      * Remove chunk from local storage.
+     *
+     * IMPORTANT: Allow exceptions to pass through this operation!
      *
      * @param string $id Chunk ID
      *
@@ -121,6 +128,8 @@ abstract class SinkBase
     /**
      * Import one chunk from sink.
      *
+     * IMPORTANT: Allow exceptions to pass through this operation!
+     *
      * @param string $id Chunk ID.
      *
      * @return bool
@@ -129,6 +138,8 @@ abstract class SinkBase
 
     /**
      * Remove imported data from DB
+     *
+     * IMPORTANT: Allow exceptions to pass through this operation!
      *
      * @param string $id Chunk ID
      *
