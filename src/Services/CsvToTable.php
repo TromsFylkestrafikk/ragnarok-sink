@@ -246,6 +246,16 @@ class CsvToTable
     }
 
     /**
+     * Get total number of processed records.
+     *
+     * @return int
+     */
+    public function getProcessedRecords(): int
+    {
+        return $this->processedRecs;
+    }
+
+    /**
      * Print summary statistics to log file.
      *
      * @return $this

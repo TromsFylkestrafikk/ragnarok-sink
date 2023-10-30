@@ -104,9 +104,9 @@ abstract class SinkBase
      *
      * @param string $id Chunk ID to fetch data for.
      *
-     * @return bool True on success.
+     * @return int Total number of bytes.
      */
-    public function fetch($id): bool
+    public function fetch($id): int
     {
         return true;
     }
@@ -132,9 +132,9 @@ abstract class SinkBase
      *
      * @param string $id Chunk ID.
      *
-     * @return bool
+     * @return int Total number of records/elements imported
      */
-    abstract public function import($id): bool;
+    abstract public function import($id): int;
 
     /**
      * Remove imported data from DB
