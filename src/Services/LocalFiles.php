@@ -33,7 +33,7 @@ class LocalFiles
      * @param string $filename
      * @param string $content
      *
-     * @return Rawfile
+     * @return RawFile
      */
     public function toFile($filename, $content)
     {

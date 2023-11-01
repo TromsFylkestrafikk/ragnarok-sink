@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 use Ragnarok\Sink\Services\Registrar;
 
 /**
- * @method static void register(string $id, string $sinkClass) Register your ragnarok sink here.
+ * @method static void register(string $sinkClass) Register your ragnarok sink here.
  * @method static Collection getSinkClasses()
  */
 class SinkRegistrar extends Facade

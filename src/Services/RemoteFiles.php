@@ -22,20 +22,15 @@ class RemoteFiles
     protected $rPath = '/';
 
     /**
-     * @var LocalFiles
-     */
-    protected $local = null;
-
-    /**
-     * @param string $sinkId Name of sink
+     * @param string $sinkId Sink identifier.
+     * @param LocalFiles $local Local file management service
      * @param Filesystem $rDisk Remote disk instance
      *
      * @return void
      */
-    public function __construct(protected string $sinkId, protected Filesystem $rDisk)
+    public function __construct(string $sinkId, protected LocalFiles $local, protected Filesystem $rDisk)
     {
-        $this->logPrintfInit('[RemoteFile]: ');
-        $this->local = new LocalFiles($sinkId);
+        $this->logPrintfInit('[RemoteFile %s]: ', $sinkId);
     }
 
     /**

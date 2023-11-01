@@ -106,9 +106,26 @@ abstract class SinkBase
      *
      * @return int Total number of bytes.
      */
-    public function fetch($id): int
+    public function fetch(string $id): int
     {
-        return true;
+        return 0;
+    }
+
+    /**
+     * Get chunk version or checksum.
+     *
+     * This is used to detect updates in raw data from sink. Make sure the
+     * version string always is equal for the *same* original data, independent
+     * of timestamp and source of origin.
+     *
+     * For sinks downloading a single file per chunk, the file's md5 checksum is
+     * a perfect candidate as version.
+     *
+     * @param string $id
+     */
+    public function getChunkVersion($id): string
+    {
+        return $id;
     }
 
     /**
