@@ -112,6 +112,18 @@ abstract class SinkBase
     }
 
     /**
+     * Get Date and time this chunk belongs to.
+     *
+     * @param string $id Chunk ID to determine date for.
+     *
+     * @return Carbon
+     */
+    public function getChunkDate($id): Carbon
+    {
+        return new Carbon($id);
+    }
+
+    /**
      * Get chunk version or checksum.
      *
      * This is used to detect updates in raw data from sink. Make sure the
@@ -122,6 +134,8 @@ abstract class SinkBase
      * a perfect candidate as version.
      *
      * @param string $id
+     *
+     * @return string
      */
     public function getChunkVersion($id): string
     {
