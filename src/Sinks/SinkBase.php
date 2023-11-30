@@ -3,6 +3,8 @@
 namespace Ragnarok\Sink\Sinks;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Ragnarok\Sink\Models\RawFile;
 
 /**
  * Foundation class for Ragnarok sinks.
@@ -118,7 +120,7 @@ abstract class SinkBase
      *
      * @return Carbon
      */
-    public function getChunkDate($id): Carbon
+    public function getChunkDate(string $id): Carbon
     {
         return new Carbon($id);
     }
@@ -137,9 +139,21 @@ abstract class SinkBase
      *
      * @return string
      */
-    public function getChunkVersion($id): string
+    public function getChunkVersion(string $id): string
     {
         return $id;
+    }
+
+    /**
+     * Get local files associated with given chunk.
+     *
+     * @param string $id Chunk ID
+     *
+     * @return Collection<array-key, RawFile>
+     */
+    public function getChunkFiles(string $id): Collection
+    {
+        return new Collection();
     }
 
     /**
@@ -151,7 +165,7 @@ abstract class SinkBase
      *
      * @return bool True on success
      */
-    public function removeChunk($id): bool
+    public function removeChunk(string $id): bool
     {
         return true;
     }
@@ -165,7 +179,7 @@ abstract class SinkBase
      *
      * @return int Total number of records/elements imported
      */
-    abstract public function import($id): int;
+    abstract public function import(string $id): int;
 
     /**
      * Remove imported data from DB
@@ -176,5 +190,5 @@ abstract class SinkBase
      *
      * @return bool True on success
      */
-    abstract public function deleteImport($id): bool;
+    abstract public function deleteImport(string $id): bool;
 }

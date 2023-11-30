@@ -3,6 +3,7 @@
 namespace Ragnarok\Sink\Services;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Database\Eloquent\Collection;
 use Ragnarok\Sink\Models\RawFile;
 
 /**
@@ -35,7 +36,7 @@ class LocalFiles
      *
      * @return RawFile
      */
-    public function toFile($filename, $content)
+    public function toFile($filename, $content): RawFile
     {
         $checksum = md5($content);
         $size = strlen($content);
@@ -65,17 +66,27 @@ class LocalFiles
      *
      * @return RawFile|null
      */
-    public function getFile($filename)
+    public function getFile($filename): RawFile|null
     {
         return RawFile::firstWhere(['sink_id' => $this->sinkId, 'name' => $this->getFilePath($filename)]);
     }
 
     /**
+     * @param string $pattern
+     */
+    public function getFilesLike(string $pattern): Collection
+    {
+        return RawFile::where('sink_id', $this->sinkId)
+            ->where('name', 'like', $this->getLocalDir() . '/' . $pattern)
+            ->get();
+    }
+
+    /**
      * @param string|RawFile $file
      *
-     * @return string
+     * @return string|null
      */
-    public function getContents($file)
+    public function getContents($file): string|null
     {
         if (is_string($file)) {
             $file = $this->getFile($file);
@@ -95,7 +106,7 @@ class LocalFiles
      *
      * @return $this
      */
-    public function rmFile($filename)
+    public function rmFile($filename): LocalFiles
     {
         $file = $this->getFile($filename);
         if (!$file) {
@@ -112,7 +123,7 @@ class LocalFiles
      * @param string $path
      * @return $this
      */
-    public function setPath($path = '')
+    public function setPath($path = ''): LocalFiles
     {
         $this->path = trim($path, '/');
         return $this;
@@ -124,7 +135,7 @@ class LocalFiles
      * @param string $filename
      * @return string
      */
-    public function getFilePath($filename)
+    public function getFilePath($filename): string
     {
         $lDir = $this->getLocalDir();
         // Make sure local directory exists
@@ -139,7 +150,7 @@ class LocalFiles
      *
      * @return string
      */
-    public function getLocalDir()
+    public function getLocalDir(): string
     {
         $walk = ['/' . $this->sinkId];
         if (strlen($this->path)) {
