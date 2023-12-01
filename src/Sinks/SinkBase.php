@@ -126,48 +126,15 @@ abstract class SinkBase
     }
 
     /**
-     * Get chunk version or checksum.
-     *
-     * This is used to detect updates in raw data from sink. Make sure the
-     * version string always is equal for the *same* original data, independent
-     * of timestamp and source of origin.
-     *
-     * For sinks downloading a single file per chunk, the file's md5 checksum is
-     * a perfect candidate as version.
-     *
-     * @param string $id
-     *
-     * @return string
-     */
-    public function getChunkVersion(string $id): string
-    {
-        return $id;
-    }
-
-    /**
-     * Get local files associated with given chunk.
+     * Get stored, local file associated with given chunk.
      *
      * @param string $id Chunk ID
      *
-     * @return Collection<array-key, RawFile>
+     * @return RawFile|null
      */
-    public function getChunkFiles(string $id): Collection
+    public function getChunkFile(string $id): RawFile|null
     {
-        return new Collection();
-    }
-
-    /**
-     * Remove chunk from local storage.
-     *
-     * IMPORTANT: Allow exceptions to pass through this operation!
-     *
-     * @param string $id Chunk ID
-     *
-     * @return bool True on success
-     */
-    public function removeChunk(string $id): bool
-    {
-        return true;
+        return null;
     }
 
     /**
