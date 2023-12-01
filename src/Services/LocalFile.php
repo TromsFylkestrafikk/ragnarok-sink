@@ -5,7 +5,6 @@ namespace Ragnarok\Sink\Services;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Ragnarok\Sink\Models\RawFile;
 
-
 /**
  * Wrapper/helper around RawFile entry
  */
@@ -34,6 +33,11 @@ class LocalFile
             ]);
         }
         return new static($sinkId, $file);
+    }
+
+    public function getFile(): RawFile
+    {
+        return $this->file;
     }
 
     /**
@@ -66,11 +70,6 @@ class LocalFile
     public function getPath(): string
     {
         return $this->getDisk()->path($this->file->name);
-    }
-
-    public function getFile(): RawFile
-    {
-        return $this->file;
     }
 
     /**
