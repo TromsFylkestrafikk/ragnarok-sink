@@ -12,16 +12,14 @@ use ZipArchive;
 class ChunkArchive
 {
     /**
-     * Files to be added in archive
-     *
-     * @var string[]
+     * @var ZipArchive
      */
-    protected $files = [];
+    protected $archive = null;
 
     /**
      * @var LocalFile
      */
-    protected $local;
+    protected $local = null;
 
     public function __construct(protected string $sinkId, protected string $chunkId)
     {
@@ -30,16 +28,35 @@ class ChunkArchive
 
     /**
      * Add file to archive.
-     *
-     * @param string $filePath
      */
-    public function addFile($filePath, $entryName = null): ChunkArchive
+    public function addFile(string $filePath, string $entryname = null): ChunkArchive
     {
-        $this->files[] = [
-            'path' => $filePath,
-            'entryName' => $entryName ?: $this->sinkId . '/' . basename($filePath),
-        ];
+        $this->getArchive()->addFile($filePath, $entryname);
         return $this;
+    }
+
+    /**
+     * Add file with provided content to archive.
+     */
+    public function addFromString(string $filename, string $content): ChunkArchive
+    {
+        $this->getArchive()->addFromString($filename, $content);
+        return $this;
+    }
+
+    /**
+     * Close/save zip archive and update/save RawFile model.
+     */
+    public function save(): ChunkArchive
+    {
+        $this->getArchive()->close();
+        $this->getLocal()->save();
+        return $this;
+    }
+
+    public function getFile(): RawFile
+    {
+        return $this->getLocal()->getFile();
     }
 
     /**
@@ -50,18 +67,20 @@ class ChunkArchive
         return $this->chunkId . '.zip';
     }
 
-    /**
-     * Write zip and store it in local file repository.
-     */
-    public function store(): RawFile
+    protected function getArchive(): ZipArchive
     {
-        $this->local = LocalFile::createFromFilename($this->sinkId, $this->getFilename());
-        $archive = new ZipArchive();
-        $archive->open($this->local->getPath(), ZipArchive::CREATE | ZipArchive::OVERWRITE);
-        foreach ($this->files as $file) {
-            $archive->addFile($file, $entryname);
+        if ($this->archive === null) {
+            $this->archive = new ZipArchive();
+            $this->archive->open($this->getLocal()->getPath(), ZipArchive::CREATE | ZipArchive::OVERWRITE);
         }
-        $archive->close();
-        $this->local->save();
+        return $this->archive;
+    }
+
+    protected function getLocal(): LocalFile
+    {
+        if ($this->local === null) {
+            $this->local = LocalFile::createFromFilename($this->sinkId, $this->getFilename());
+        }
+        return $this->local;
     }
 }
