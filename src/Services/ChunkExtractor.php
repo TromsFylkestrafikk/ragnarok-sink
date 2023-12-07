@@ -2,7 +2,6 @@
 
 namespace Ragnarok\Sink\Services;
 
-
 use Ragnarok\Sink\Models\SinkFile;
 use ZipArchive;
 
@@ -39,10 +38,9 @@ class ChunkExtractor
         $this->destDir = uniqid($this->sinkId . '-');
         $disk = $this->localFile->getDisk();
         $disk->makeDirectory($this->destDir);
-        $fullPath = $disk->path($this->destDir);
         $archive = new ZipArchive();
         $archive->open($disk->path($this->file->name));
-        $archive->extractTo($fullPath);
+        $archive->extractTo($this->getDestDir());
         $archive->close();
         return $this;
     }
@@ -56,6 +54,19 @@ class ChunkExtractor
             return null;
         }
         return $this->localFile->getDisk()->path($this->destDir);
+    }
+
+    /**
+     * Get all files within zip file.
+     *
+     * @return mixed[]
+     */
+    public function getFiles(): array
+    {
+        if ($this->destDir === null) {
+            $this->extract();
+        }
+        return $this->localFile->getDisk()->files($this->destDir);
     }
 
     public function close(): ChunkExtractor

@@ -125,15 +125,16 @@ abstract class SinkBase
     }
 
     /**
-     * Import one chunk from sink.
+     * Import chunk from sink.
      *
      * IMPORTANT: Allow exceptions to pass through this operation!
      *
      * @param string $id Chunk ID.
+     * @param SinkFile $file The file retrieved by $this->fetch()
      *
      * @return int Total number of records/elements imported
      */
-    abstract public function import(string $id): int;
+    abstract public function import(string $id, SinkFile $file): int;
 
     /**
      * Remove imported data from DB
