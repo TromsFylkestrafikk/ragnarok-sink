@@ -2,7 +2,7 @@
 
 namespace Ragnarok\Sink\Services;
 
-use Ragnarok\Sink\Models\RawFile;
+use Ragnarok\Sink\Models\SinkFile;
 use Ragnarok\Sink\Services\LocalFile;
 use ZipArchive;
 
@@ -45,7 +45,7 @@ class ChunkArchive
     }
 
     /**
-     * Close/save zip archive and update/save RawFile model.
+     * Close/save zip archive and update/save SinkFile model.
      */
     public function save(): ChunkArchive
     {
@@ -54,7 +54,7 @@ class ChunkArchive
         return $this;
     }
 
-    public function getFile(): RawFile
+    public function getFile(): SinkFile
     {
         return $this->getLocal()->getFile();
     }

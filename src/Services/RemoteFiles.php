@@ -5,7 +5,7 @@ namespace Ragnarok\Sink\Services;
 use Exception;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Ragnarok\Sink\Traits\LogPrintf;
-use Ragnarok\Sink\Models\RawFile;
+use Ragnarok\Sink\Models\SinkFile;
 
 /**
  * Service for syncing, copying, maintaining remote files with local files.
@@ -41,7 +41,7 @@ class RemoteFiles
      *
      * @param string $filename
      *
-     * @return RawFile|null
+     * @return SinkFile|null
      */
     public function getFile($filename)
     {
@@ -93,7 +93,7 @@ class RemoteFiles
      *
      * @param string $filename
      *
-     * @return RawFile|null
+     * @return SinkFile|null
      */
     protected function copyFile($filename)
     {

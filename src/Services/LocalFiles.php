@@ -4,7 +4,7 @@ namespace Ragnarok\Sink\Services;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Collection;
-use Ragnarok\Sink\Models\RawFile;
+use Ragnarok\Sink\Models\SinkFile;
 
 /**
  * Helper class to manage data in local files.
@@ -34,9 +34,9 @@ class LocalFiles
      * @param string $filename
      * @param string $content
      *
-     * @return RawFile
+     * @return SinkFile
      */
-    public function toFile($filename, $content): RawFile
+    public function toFile($filename, $content): SinkFile
     {
         $checksum = md5($content);
         $size = strlen($content);
@@ -51,7 +51,7 @@ class LocalFiles
             ]);
             $existing->save();
         }
-        return $existing ?: RawFile::create([
+        return $existing ?: SinkFile::create([
             'sink_id' => $this->sinkId,
             'name' => $filePath,
             'size' => $size,
@@ -64,11 +64,11 @@ class LocalFiles
      *
      * @param $filename
      *
-     * @return RawFile|null
+     * @return SinkFile|null
      */
-    public function getFile($filename): RawFile|null
+    public function getFile($filename): SinkFile|null
     {
-        return RawFile::firstWhere(['sink_id' => $this->sinkId, 'name' => $this->getFilePath($filename)]);
+        return SinkFile::firstWhere(['sink_id' => $this->sinkId, 'name' => $this->getFilePath($filename)]);
     }
 
     /**
@@ -76,13 +76,13 @@ class LocalFiles
      */
     public function getFilesLike(string $pattern): Collection
     {
-        return RawFile::where('sink_id', $this->sinkId)
+        return SinkFile::where('sink_id', $this->sinkId)
             ->where('name', 'like', $this->getLocalDir() . '/' . $pattern)
             ->get();
     }
 
     /**
-     * @param string|RawFile $file
+     * @param string|SinkFile $file
      *
      * @return string|null
      */

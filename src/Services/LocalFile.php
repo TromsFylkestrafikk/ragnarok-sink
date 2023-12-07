@@ -3,10 +3,10 @@
 namespace Ragnarok\Sink\Services;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
-use Ragnarok\Sink\Models\RawFile;
+use Ragnarok\Sink\Models\SinkFile;
 
 /**
- * Wrapper/helper around RawFile entry
+ * Wrapper/helper around SinkFile entry
  */
 class LocalFile
 {
@@ -15,7 +15,7 @@ class LocalFile
      */
     protected $disk = null;
 
-    public function __construct(protected string $sinkId, protected RawFile $file)
+    public function __construct(protected string $sinkId, protected SinkFile $file)
     {
         //
     }
@@ -23,9 +23,9 @@ class LocalFile
     public static function createFromFilename(string $sinkId, string $filename): LocalFile
     {
         $relPath = $sinkId . '/' . $filename;
-        $file = RawFile::firstWhere(['sink_id' => $this->sinkId, 'name' => $relPath]);
+        $file = SinkFile::firstWhere(['sink_id' => $sinkId, 'name' => $relPath]);
         if (!$file) {
-            $file = new RawFile([
+            $file = new SinkFile([
                 'sink_id' => $sinkId,
                 'name' => $relPath,
                 'size' => 0,
@@ -35,7 +35,7 @@ class LocalFile
         return new static($sinkId, $file);
     }
 
-    public function getFile(): RawFile
+    public function getFile(): SinkFile
     {
         return $this->file;
     }

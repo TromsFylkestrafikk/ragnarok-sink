@@ -3,8 +3,7 @@
 namespace Ragnarok\Sink\Sinks;
 
 use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Collection;
-use Ragnarok\Sink\Models\RawFile;
+use Ragnarok\Sink\Models\SinkFile;
 
 /**
  * Foundation class for Ragnarok sinks.
@@ -106,11 +105,11 @@ abstract class SinkBase
      *
      * @param string $id Chunk ID to fetch data for.
      *
-     * @return int Total number of bytes.
+     * @return SinkFile|null
      */
-    public function fetch(string $id): int
+    public function fetch(string $id): SinkFile|null
     {
-        return 0;
+        return null;
     }
 
     /**
@@ -123,18 +122,6 @@ abstract class SinkBase
     public function getChunkDate(string $id): Carbon
     {
         return new Carbon($id);
-    }
-
-    /**
-     * Get stored, local file associated with given chunk.
-     *
-     * @param string $id Chunk ID
-     *
-     * @return RawFile|null
-     */
-    public function getChunkFile(string $id): RawFile|null
-    {
-        return null;
     }
 
     /**
