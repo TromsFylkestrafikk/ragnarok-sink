@@ -32,6 +32,6 @@ class TestCase extends BaseTestCase
 
     protected function getPackageProviders($app)
     {
-        // return [RagnarokSinkServiceProvider::class];
+        return [RagnarokSinkServiceProvider::class];
     }
 }
