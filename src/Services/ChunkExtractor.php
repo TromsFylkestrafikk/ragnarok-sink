@@ -3,6 +3,7 @@
 namespace Ragnarok\Sink\Services;
 
 use Ragnarok\Sink\Models\SinkFile;
+use Ragnarok\Sink\Traits\LogPrintf;
 use ZipArchive;
 
 /**
@@ -10,6 +11,8 @@ use ZipArchive;
  */
 class ChunkExtractor
 {
+    use LogPrintf;
+
     protected $destDir = null;
 
     /**
@@ -20,6 +23,7 @@ class ChunkExtractor
     public function __construct(protected string $sinkId, protected SinkFile $file)
     {
         $this->localFile = new LocalFile($sinkId, $file);
+        $this->logPrintfInit('[ChunkExtractor %s]: ', $sinkId);
     }
 
     /**
@@ -39,7 +43,9 @@ class ChunkExtractor
         $disk = $this->localFile->getDisk();
         $disk->makeDirectory($this->destDir);
         $archive = new ZipArchive();
+        $this->debug('Opening archive %s', $disk->path($this->file->name));
         $archive->open($disk->path($this->file->name));
+        $this->debug('Extracting to %s', $this->getDestDir());
         $archive->extractTo($this->getDestDir());
         $archive->close();
         return $this;
@@ -66,7 +72,8 @@ class ChunkExtractor
         if ($this->destDir === null) {
             $this->extract();
         }
-        return $this->localFile->getDisk()->files($this->destDir);
+        $disk = $this->localFile->getDisk();
+        return array_map(fn ($item) => $disk->path($item), $disk->files($this->destDir));
     }
 
     public function close(): ChunkExtractor
