@@ -4,6 +4,7 @@ namespace Ragnarok\Sink\Services;
 
 use Ragnarok\Sink\Models\SinkFile;
 use Ragnarok\Sink\Services\LocalFile;
+use Ragnarok\Sink\Traits\LogPrintf;
 use ZipArchive;
 
 /**
@@ -11,6 +12,8 @@ use ZipArchive;
  */
 class ChunkArchive
 {
+    use LogPrintf;
+
     /**
      * @var ZipArchive
      */
@@ -23,7 +26,7 @@ class ChunkArchive
 
     public function __construct(protected string $sinkId, protected string $chunkId)
     {
-        //
+        $this->logPrintfInit('[ChunkArchive %s]: ', $sinkId);
     }
 
     /**
@@ -51,6 +54,7 @@ class ChunkArchive
     {
         $this->getArchive()->close();
         $this->getLocal()->save();
+        $this->debug('Archive complete: %s', $this->getLocal()->getFile()->name);
         return $this;
     }
 
@@ -70,6 +74,7 @@ class ChunkArchive
     protected function getArchive(): ZipArchive
     {
         if ($this->archive === null) {
+            $this->debug('Creating archive: %s', $this->getLocal()->getPath());
             $this->archive = new ZipArchive();
             $this->archive->open($this->getLocal()->getPath(), ZipArchive::CREATE | ZipArchive::OVERWRITE);
         }
