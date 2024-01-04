@@ -20,19 +20,31 @@ class LocalFile
         //
     }
 
-    public static function createFromFilename(string $sinkId, string $filename): LocalFile
+    /**
+     * Find existing LocalFile instance from filename
+     */
+    public static function find(string $sinkId, string $filename): LocalFile|null
     {
         $relPath = $sinkId . '/' . $filename;
         $file = SinkFile::firstWhere(['sink_id' => $sinkId, 'name' => $relPath]);
-        if (!$file) {
-            $file = new SinkFile([
+        if ($file) {
+            return new static($sinkId, $file);
+        }
+        return null;
+    }
+
+    public static function createFromFilename(string $sinkId, string $filename): LocalFile
+    {
+        $local = self::find($sinkId, $filename);
+        if ($local) {
+            return $local;
+        }
+        return new static($sinkId, new SinkFile([
                 'sink_id' => $sinkId,
-                'name' => $relPath,
+                'name' => $sinkId . '/' . $filename,
                 'size' => 0,
                 'checksum' => '0',
-            ]);
-        }
-        return new static($sinkId, $file);
+        ]));
     }
 
     public function getFile(): SinkFile
@@ -50,6 +62,14 @@ class LocalFile
         $this->getDisk()->put($this->file->name, $content);
         $this->save();
         return $this;
+    }
+
+    /**
+     * Get file contents.
+     */
+    public function get(): string
+    {
+        return $this->getDisk()->get($this->getFile()->name);
     }
 
     /**

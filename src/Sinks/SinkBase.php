@@ -142,8 +142,9 @@ abstract class SinkBase
      * IMPORTANT: Allow exceptions to pass through this operation!
      *
      * @param string $id Chunk ID
+     * @param SinkFile $file The file retrieved by $this->fetch()
      *
      * @return bool True on success
      */
-    abstract public function deleteImport(string $id): bool;
+    abstract public function deleteImport(string $id, SinkFile $file): bool;
 }
