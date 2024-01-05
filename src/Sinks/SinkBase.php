@@ -3,8 +3,7 @@
 namespace Ragnarok\Sink\Sinks;
 
 use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Collection;
-use Ragnarok\Sink\Models\RawFile;
+use Ragnarok\Sink\Models\SinkFile;
 
 /**
  * Foundation class for Ragnarok sinks.
@@ -106,11 +105,11 @@ abstract class SinkBase
      *
      * @param string $id Chunk ID to fetch data for.
      *
-     * @return int Total number of bytes.
+     * @return SinkFile|null
      */
-    public function fetch(string $id): int
+    public function fetch(string $id): SinkFile|null
     {
-        return 0;
+        return null;
     }
 
     /**
@@ -126,60 +125,16 @@ abstract class SinkBase
     }
 
     /**
-     * Get chunk version or checksum.
-     *
-     * This is used to detect updates in raw data from sink. Make sure the
-     * version string always is equal for the *same* original data, independent
-     * of timestamp and source of origin.
-     *
-     * For sinks downloading a single file per chunk, the file's md5 checksum is
-     * a perfect candidate as version.
-     *
-     * @param string $id
-     *
-     * @return string
-     */
-    public function getChunkVersion(string $id): string
-    {
-        return $id;
-    }
-
-    /**
-     * Get local files associated with given chunk.
-     *
-     * @param string $id Chunk ID
-     *
-     * @return Collection<array-key, RawFile>
-     */
-    public function getChunkFiles(string $id): Collection
-    {
-        return new Collection();
-    }
-
-    /**
-     * Remove chunk from local storage.
-     *
-     * IMPORTANT: Allow exceptions to pass through this operation!
-     *
-     * @param string $id Chunk ID
-     *
-     * @return bool True on success
-     */
-    public function removeChunk(string $id): bool
-    {
-        return true;
-    }
-
-    /**
-     * Import one chunk from sink.
+     * Import chunk from sink.
      *
      * IMPORTANT: Allow exceptions to pass through this operation!
      *
      * @param string $id Chunk ID.
+     * @param SinkFile $file The file retrieved by $this->fetch()
      *
      * @return int Total number of records/elements imported
      */
-    abstract public function import(string $id): int;
+    abstract public function import(string $id, SinkFile $file): int;
 
     /**
      * Remove imported data from DB
@@ -187,8 +142,9 @@ abstract class SinkBase
      * IMPORTANT: Allow exceptions to pass through this operation!
      *
      * @param string $id Chunk ID
+     * @param SinkFile $file The file retrieved by $this->fetch()
      *
      * @return bool True on success
      */
-    abstract public function deleteImport(string $id): bool;
+    abstract public function deleteImport(string $id, SinkFile $file): bool;
 }

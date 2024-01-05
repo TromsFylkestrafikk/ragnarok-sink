@@ -5,7 +5,7 @@ namespace Ragnarok\Sink\Services;
 use Exception;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Ragnarok\Sink\Traits\LogPrintf;
-use Ragnarok\Sink\Models\RawFile;
+use Ragnarok\Sink\Models\SinkFile;
 
 /**
  * Service for syncing, copying, maintaining remote files with local files.
@@ -23,12 +23,11 @@ class RemoteFiles
 
     /**
      * @param string $sinkId Sink identifier.
-     * @param LocalFiles $local Local file management service
      * @param Filesystem $rDisk Remote disk instance
      *
      * @return void
      */
-    public function __construct(string $sinkId, protected LocalFiles $local, protected Filesystem $rDisk)
+    public function __construct(protected string $sinkId, protected Filesystem $rDisk)
     {
         $this->logPrintfInit('[RemoteFile %s]: ', $sinkId);
     }
@@ -41,25 +40,15 @@ class RemoteFiles
      *
      * @param string $filename
      *
-     * @return RawFile|null
+     * @return SinkFile|null
      */
     public function getFile($filename)
     {
-        $file = $this->local->getFile($filename);
-        if (!$file) {
-            $file = $this->copyFile($filename);
+        $local = LocalFile::find($this->sinkId, $filename);
+        if (!$local) {
+            $local = $this->copyFile($filename);
         }
-        return $file;
-    }
-
-    /**
-     * Get service for managing local files.
-     *
-     * @return LocalFiles
-     */
-    public function getLocal()
-    {
-        return $this->local;
+        return $local->getFile();
     }
 
     public function getDisk(): Filesystem
@@ -89,16 +78,17 @@ class RemoteFiles
     }
 
     /**
-     * Copy file from remote and create new file model.
+     * Copy file from remote and update/create new file model.
      *
      * @param string $filename
      *
-     * @return RawFile|null
+     * @return LocalFile|null
      */
     protected function copyFile($filename)
     {
-        $content = $this->getRemoteFileContent($filename);
-        return $this->local->toFile($filename, $content);
+        $local = LocalFile::createFromFilename($this->sinkId, $filename);
+        $local->put($this->getRemoteFileContent($filename));
+        return $local;
     }
 
     /**
