@@ -41,6 +41,21 @@ abstract class SinkBase
     public $cron = null;
 
     /**
+     * List of tables for imported destination data.
+     *
+     * Return a keyed list of tables to store the final imported data. Table
+     * name is the key and description of it is the value. The table migrations
+     * created by sinks should have comments on all columns which aren't
+     * obvious.
+     *
+     * @return string[]
+     */
+    public function destinationTables(): array
+    {
+        return [];
+    }
+
+    /**
      * Start date of data to import.
      *
      * @return Carbon
