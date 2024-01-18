@@ -2,7 +2,6 @@
 
 namespace Ragnarok\Sink\Services;
 
-use Illuminate\Contracts\Filesystem\Filesystem;
 use Ragnarok\Sink\Models\SinkFile;
 
 /**
@@ -11,13 +10,13 @@ use Ragnarok\Sink\Models\SinkFile;
 class LocalFile
 {
     /**
-     * @var Filesystem
+     * @var SinkDisk
      */
-    protected $disk = null;
+    protected $sinkDisk = null;
 
     public function __construct(protected string $sinkId, protected SinkFile $file)
     {
-        //
+        $this->sinkDisk = new SinkDisk($sinkId);
     }
 
     /**
@@ -59,7 +58,7 @@ class LocalFile
      */
     public function put(string $content): LocalFile
     {
-        $this->getDisk()->put($this->file->name, $content);
+        $this->sinkDisk->getDisk()->put($this->file->name, $content);
         $this->save();
         return $this;
     }
@@ -69,7 +68,7 @@ class LocalFile
      */
     public function get(): string
     {
-        return $this->getDisk()->get($this->getFile()->name);
+        return $this->sinkDisk->getDisk()->get($this->getFile()->name);
     }
 
     /**
@@ -89,17 +88,6 @@ class LocalFile
      */
     public function getPath(): string
     {
-        return $this->getDisk()->path($this->file->name);
-    }
-
-    /**
-     * @return Filesystem
-     */
-    public function getDisk(): Filesystem
-    {
-        if ($this->disk === null) {
-            $this->disk = app('filesystem')->build(config('ragnarok_sink.local_disk'));
-        }
-        return $this->disk;
+        return $this->sinkDisk->getDisk()->path($this->file->name);
     }
 }

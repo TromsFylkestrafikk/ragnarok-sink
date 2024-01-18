@@ -11,7 +11,7 @@ class RagnarokSinkTables extends Migration
         Schema::create('ragnarok_files', function (Blueprint $table) {
             $table->increments('id');
             $table->char('sink_id', 64)->comment('Sink that owns this file');
-            $table->char('name', 128)->comment('Name of file relative to disk');
+            $table->char('name', 128)->index()->comment('Name of file relative to disk');
             $table->unsignedBigInteger('size')->default(0)->comment('File size in bytes');
             $table->char('checksum', 128)->nullable()->comment('Md5 sum of file');
             $table->timestamps();

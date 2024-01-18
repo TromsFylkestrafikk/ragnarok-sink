@@ -162,4 +162,19 @@ abstract class SinkBase
      * @return bool True on success
      */
     abstract public function deleteImport(string $id, SinkFile $file): bool;
+
+    /**
+     * Given a file name, get the chunk ID.
+     *
+     * This is a bit like self::fetch() in reverse. Whenever files are
+     * previously downloaded or otherwise already exist in local storage, this
+     * is used to re-add files as fetched chunks.
+     *
+     * @return string|null The chunk identifier previously given in
+     * self::getChunkIds
+     */
+    public function filenameToChunkId(string $filename): string|null
+    {
+        return null;
+    }
 }

@@ -7,3 +7,4 @@
 - API for creating and extracting archives for chunks.
 - API for listing destination tables. Used to get an overview of its
   schemas.
+- API call for getting chunk ID based on file name.
