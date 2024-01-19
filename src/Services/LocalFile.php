@@ -2,6 +2,7 @@
 
 namespace Ragnarok\Sink\Services;
 
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Ragnarok\Sink\Models\SinkFile;
 
 /**
@@ -58,7 +59,7 @@ class LocalFile
      */
     public function put(string $content): LocalFile
     {
-        $this->sinkDisk->getDisk()->put($this->file->name, $content);
+        $this->getDisk()->put($this->file->name, $content);
         $this->save();
         return $this;
     }
@@ -68,7 +69,7 @@ class LocalFile
      */
     public function get(): string
     {
-        return $this->sinkDisk->getDisk()->get($this->getFile()->name);
+        return $this->getDisk()->get($this->getFile()->name);
     }
 
     /**
@@ -81,6 +82,14 @@ class LocalFile
         $this->file->size = filesize($filePath);
         $this->file->save();
         return $this;
+    }
+
+    /**
+     * Get file system disk associated with file
+     */
+    public function getDisk(): Filesystem
+    {
+        return $this->sinkDisk->getDisk();
     }
 
     /**
