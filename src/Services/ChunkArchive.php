@@ -76,7 +76,10 @@ class ChunkArchive
         if ($this->archive === null) {
             $this->debug('Creating archive: %s', $this->getLocal()->getPath());
             $this->archive = new ZipArchive();
-            $this->archive->open($this->getLocal()->getPath(), ZipArchive::CREATE | ZipArchive::OVERWRITE);
+            $this->archive->open(
+                $this->getLocal()->assertDir()->getPath(),
+                ZipArchive::CREATE | ZipArchive::OVERWRITE
+            );
         }
         return $this->archive;
     }

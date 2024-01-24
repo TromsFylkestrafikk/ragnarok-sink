@@ -99,4 +99,20 @@ class LocalFile
     {
         return $this->sinkDisk->getDisk()->path($this->file->name);
     }
+
+    /**
+     * Create necessary directory for file if it does not exist.
+     */
+    public function assertDir(): LocalFile
+    {
+        $disk = $this->sinkDisk->getDisk();
+        $dir = dirname($this->getFile()->name);
+        if ($disk->exists($dir)) {
+            return $this;
+        }
+        if (!in_array($dir, ['.', '/']) && strlen($dir)) {
+            $disk->makeDirectory($dir);
+        }
+        return $this;
+    }
 }
