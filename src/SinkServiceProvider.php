@@ -4,9 +4,10 @@ namespace Ragnarok\Sink;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Ragnarok\Sink\Console\MakeSink;
 use Ragnarok\Sink\Services\Registrar;
 
-class RagnarokSinkServiceProvider extends ServiceProvider
+class SinkServiceProvider extends ServiceProvider
 {
     public $singletons = [
         'ragnarok.sink.registrar' => Registrar::class,
@@ -31,7 +32,15 @@ class RagnarokSinkServiceProvider extends ServiceProvider
     {
         $this->publishConfig();
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->registerCommands();
         // $this->registerRoutes();
+    }
+
+    protected function registerCommands(): void
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands(MakeSink::class);
+        }
     }
 
     /**

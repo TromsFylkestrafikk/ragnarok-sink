@@ -1,8 +1,8 @@
 <?php
 
-namespace Ragnarok\Sink\Tests;
+namespace Ragnarok\Dummy\Tests;
 
-use Ragnarok\Sink\SinkServiceProvider;
+use Ragnarok\Dummy\DummyServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -32,6 +32,6 @@ class TestCase extends BaseTestCase
 
     protected function getPackageProviders($app)
     {
-        return [SinkServiceProvider::class];
+        return [DummyServiceProvider::class];
     }
 }

@@ -8,3 +8,4 @@
 - API for listing destination tables. Used to get an overview of its
   schemas.
 - API call for getting chunk ID based on file name.
+- Console command for creating skeleton sinks.

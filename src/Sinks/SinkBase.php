@@ -93,24 +93,15 @@ abstract class SinkBase
     }
 
     /**
-     * Get total number of chunks from sink.
+     * Get Date and time this chunk belongs to.
      *
-     * @return int
-     */
-    public function chunksCount(): int
-    {
-        return $this->getFromDate()->daysUntil($this->getToDate())->count();
-    }
-
-    /**
-     * Get updated import status for given chunk IDs.
+     * @param string $id Chunk ID to determine date for.
      *
-     * @param array $ids List of chunk IDs
-     * @return array Keyed by chunk ID.
+     * @return Carbon
      */
-    public function status(array $ids): array
+    public function getChunkDate(string $id): Carbon
     {
-        return [];
+        return new Carbon($id);
     }
 
     /**
@@ -125,18 +116,6 @@ abstract class SinkBase
     public function fetch(string $id): SinkFile|null
     {
         return null;
-    }
-
-    /**
-     * Get Date and time this chunk belongs to.
-     *
-     * @param string $id Chunk ID to determine date for.
-     *
-     * @return Carbon
-     */
-    public function getChunkDate(string $id): Carbon
-    {
-        return new Carbon($id);
     }
 
     /**

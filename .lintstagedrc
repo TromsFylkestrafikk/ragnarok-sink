@@ -1,5 +1,5 @@
 {
     "src/**/*.php": [
-        "php ./vendor/bin/phpcs -n --colors --standard=./phpcs.xml"
+        "php ./vendor/bin/phpcs -n --colors --ignore=/src/Console/MakeSink/stub/\* --standard=./phpcs.xml"
     ]
 }

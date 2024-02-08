@@ -1,22 +1,21 @@
-# ragnarok-sink
+# Ragnarok Dummy sink
 
-This is an API only package used by Ragnarok and data sinks used by it.
-
-All data sinks for Ragnarok must extend the `DataSink` abstraction
-to be available in Ragnarok.
+Stub/skeleton package compatible with Ragnarok
 
 ## Install
 
-```bash
-composer require ragnarok/sink
+1. Add repository to your composer.json:
+```json
+    "repositories": [
+        {
+            "type": "github",
+            "url": "https://github.com/example/ragnarok-dummy"
+        },
 ```
-
-## Writing sinks
-
-In a full installation, this package provides a command
-`ragnarok:make-sink` which creates a stub laravel composer package
-with the basic Ragnarok Sink API in place. Use this a starting point
-when creating new sinks.
+2. Add it.
+```bash
+composer require ragnarok/ragnarok-dummy
+```
 
 ## License
 

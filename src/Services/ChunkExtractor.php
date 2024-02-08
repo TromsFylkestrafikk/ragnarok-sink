@@ -13,7 +13,15 @@ class ChunkExtractor
 {
     use LogPrintf;
 
+    /**
+     * @var string
+     */
     protected $destDir = null;
+
+    /**
+     * @var bool
+     */
+    protected $extracted = false;
 
     /**
      * @var LocalFile
@@ -22,6 +30,7 @@ class ChunkExtractor
 
     public function __construct(protected string $sinkId, protected SinkFile $file)
     {
+        $this->extracted = false;
         $this->localFile = new LocalFile($sinkId, $file);
         $this->logPrintfInit('[ChunkExtractor %s]: ', $sinkId);
     }
@@ -36,18 +45,27 @@ class ChunkExtractor
 
     public function extract(): ChunkExtractor
     {
-        if ($this->destDir !== null) {
+        if ($this->extracted) {
             return $this;
         }
-        $this->destDir = uniqid($this->sinkId . '-');
         $disk = $this->localFile->getDisk();
-        $disk->makeDirectory($this->destDir);
         $archive = new ZipArchive();
-        $this->debug('Opening archive %s', $disk->path($this->file->name));
-        $archive->open($disk->path($this->file->name));
+        $archivePath = $disk->path($this->file->name);
+        $this->debug('Opening archive %s', $archivePath);
+        $archive->open($archivePath);
         $this->debug('Extracting to %s', $this->getDestDir());
         $archive->extractTo($this->getDestDir());
         $archive->close();
+        $this->extracted = true;
+        return $this;
+    }
+
+    /**
+     * Set destination directory for archive, relative to disk.
+     */
+    public function setDestDir(string $dir): ChunkExtractor
+    {
+        $this->destDir = $dir;
         return $this;
     }
 
@@ -57,9 +75,16 @@ class ChunkExtractor
     public function getDestDir(): string|null
     {
         if ($this->destDir === null) {
-            return null;
+            $this->destDir = uniqid($this->sinkId . '-');
         }
-        return $this->localFile->getDisk()->path($this->destDir);
+        $disk = $this->localFile->getDisk();
+        $fullPath = $this->localFile->getDisk()->path($this->destDir);
+        if ($disk->exists($this->destDir)) {
+            $this->warning('Directory exist. Import may be unstable', $fullPath);
+        } else {
+            $disk->makeDirectory($this->destDir);
+        }
+        return $fullPath;
     }
 
     /**
