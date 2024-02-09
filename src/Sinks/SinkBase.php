@@ -31,6 +31,16 @@ abstract class SinkBase
     public static $title = "Example";
 
     /**
+     * If true, each chunk represent a single state in target database.
+     *
+     * Otherwise, each chunk contains a separate set of data that will be
+     * imported, not in conflict with other chunks.
+     *
+     * Single state sinks can at any time only have one imported chunk.
+     */
+    public $singleState = false;
+
+    /**
      * Cron entry for when to perform new imports.
      *
      * Optional. This is a normal unix cron entry. e.g. '45 03 * * *' is run

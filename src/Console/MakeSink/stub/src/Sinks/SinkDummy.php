@@ -12,6 +12,8 @@ class SinkDummy extends SinkBase
 {
     public static $id = "dummy";
     public static $title = "Dummy";
+    // Uncomment if this sink only operate on one state per chunk in DB store.
+    // public $singleState = true;
 
     // Run fetch+import daily at 05:00
     public $cron = '0 05 * * *';
