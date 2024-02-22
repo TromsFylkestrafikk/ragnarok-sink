@@ -21,6 +21,11 @@ class ChunkExtractor
     /**
      * @var bool
      */
+    protected $madeDestDir = false;
+
+    /**
+     * @var bool
+     */
     protected $extracted = false;
 
     /**
@@ -51,9 +56,8 @@ class ChunkExtractor
         $disk = $this->localFile->getDisk();
         $archive = new ZipArchive();
         $archivePath = $disk->path($this->file->name);
-        $this->debug('Opening archive %s', $archivePath);
         $archive->open($archivePath);
-        $this->debug('Extracting to %s', $this->getDestDir());
+        $this->debug('Extracting %s to %s', $archivePath, $this->getDestDir());
         $archive->extractTo($this->getDestDir());
         $archive->close();
         $this->extracted = true;
@@ -79,10 +83,11 @@ class ChunkExtractor
         }
         $disk = $this->localFile->getDisk();
         $fullPath = $this->localFile->getDisk()->path($this->destDir);
-        if ($disk->exists($this->destDir)) {
-            $this->warning('Directory exist. Import may be unstable', $fullPath);
+        if (!$this->madeDestDir && $disk->exists($this->destDir)) {
+            $this->warning('Directory exist (%s). Import may be unstable', $fullPath);
         } else {
             $disk->makeDirectory($this->destDir);
+            $this->madeDestDir = true;
         }
         return $fullPath;
     }
