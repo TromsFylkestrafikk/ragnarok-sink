@@ -28,6 +28,8 @@ class TestCase extends BaseTestCase
         //     'database' => ':memory:',
         //     'prefix'   => '',
         // ]);
+        include_once __DIR__ .'/2024_03_14_100000_test_table.php';
+        (new \TestTable)->up();
     }
 
     protected function getPackageProviders($app)
