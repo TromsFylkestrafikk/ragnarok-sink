@@ -15,7 +15,7 @@ class TestTable extends Migration
         {
             $table->id();
             $table->string('name');
-            $table->string('city');
+            $table->string('city')->nullable(true);
             $table->string('number');
         });
     }

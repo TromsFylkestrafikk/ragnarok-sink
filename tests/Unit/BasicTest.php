@@ -14,7 +14,7 @@ class BasicTest extends TestCase
     }
 
     /** @test */
-    public function basicFalsTest()
+    public function basicFalseTest()
     {
         $this->assertNotTrue(false);
     }
