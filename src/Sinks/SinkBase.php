@@ -103,18 +103,6 @@ abstract class SinkBase
     }
 
     /**
-     * Get Date and time this chunk belongs to.
-     *
-     * @param string $id Chunk ID to determine date for.
-     *
-     * @return Carbon
-     */
-    public function getChunkDate(string $id): Carbon
-    {
-        return new Carbon($id);
-    }
-
-    /**
      * Fetch raw, unprocessed data from sink to local storage.
      *
      * IMPORTANT: Allow exceptions to pass through this operation!
