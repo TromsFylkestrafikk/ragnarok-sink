@@ -339,6 +339,13 @@ class CsvToTable
             Reader::BOM_UTF32_LE => 'utf-32',
         ][$this->csv->getInputBOM()] ?? 'iso-8859-1';
 
+        // getInputBom failes on UTF-8 with no BOM
+        // extra check for utf-8 encoding if detected as iso-8859-1 (western)
+        if ($this->encoding === 'iso-8859-1') {
+            $csvContent = file_get_contents($this->csvFile);
+            $this->encoding = mb_detect_encoding($csvContent) === 'UTF-8' ? 'utf-8' : $this->encoding;
+        }
+
         if ($this->encoding !== 'utf-8') {
             CharsetConverter::addTo($this->csv, $this->encoding, 'utf-8');
         }
