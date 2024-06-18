@@ -328,6 +328,7 @@ class CsvToTable
 
     protected function setupCsvReader()
     {
+        $csvContent = file_get_contents($this->csvFile);        // needed to set correct encoding for utf-8 without BOM
         $this->csv = Reader::createFromPath($this->csvFile);
         $this->csv->setHeaderOffset(0);
 
@@ -338,6 +339,9 @@ class CsvToTable
             Reader::BOM_UTF32_BE => 'utf-32',
             Reader::BOM_UTF32_LE => 'utf-32',
         ][$this->csv->getInputBOM()] ?? 'iso-8859-1';
+
+        // Support UTF-8 without BOM
+        $this->encoding = mb_detect_encoding($csvContent) === 'UTF-8' ? 'utf-8' : $this->encoding;
 
         if ($this->encoding !== 'utf-8') {
             CharsetConverter::addTo($this->csv, $this->encoding, 'utf-8');
