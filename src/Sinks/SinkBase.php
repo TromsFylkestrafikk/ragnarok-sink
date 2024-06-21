@@ -4,6 +4,8 @@ namespace Ragnarok\Sink\Sinks;
 
 use Illuminate\Support\Carbon;
 use Ragnarok\Sink\Models\SinkFile;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
+use ReflectionClass;
 
 /**
  * Foundation class for Ragnarok sinks.
@@ -49,6 +51,13 @@ abstract class SinkBase
      * @var string
      */
     public $cron = null;
+
+    /**
+     * Filename for sink documentation, defaults to SINK.md
+     *
+     * It is case sensitive. Override in sink implementation if the needed.
+     */
+    public static $docfileName = "SINK.md";
 
     /**
      * List of tables for imported destination data.
@@ -160,5 +169,30 @@ abstract class SinkBase
         //     $hits = preg_match('|(?P<date>\d{4}-\d{2}-\d{2})\.zip$|', $filename, $matches);
         //     return $hits ? $matches['date'] : null;
         // @endcode
+    }
+
+    /**
+     * Get sink documentation from file SINK.md from implemenation root path.
+     * Expects GithubFlavoured Markdown.
+     *
+     * @return string|null Content of SINK.md as html if found.
+     */
+    public function getDocumentation(): string|null
+    {
+        $reflection = new ReflectionClass($this);
+        $filename = $reflection->getFileName();
+        $mdfilename = $reflection->getStaticPropertyValue('docfileName');
+        $pathArray = explode('/', $filename);
+        $pathArray = array_splice($pathArray, 0, -3);
+
+        $docfile = implode('/', $pathArray) . "/{$mdfilename}";
+
+        if (file_exists($docfile)) {
+            $fileContent = file_get_contents($docfile);
+            $converter = new GithubFlavoredMarkdownConverter();
+            return $converter->convert($fileContent);
+        }
+
+        return null;
     }
 }
