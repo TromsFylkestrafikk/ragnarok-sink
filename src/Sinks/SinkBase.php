@@ -4,7 +4,6 @@ namespace Ragnarok\Sink\Sinks;
 
 use Illuminate\Support\Carbon;
 use Ragnarok\Sink\Models\SinkFile;
-use Ragnarok\Sink\Traits\LogPrintf;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use ReflectionClass;
 
@@ -16,8 +15,6 @@ use ReflectionClass;
  */
 abstract class SinkBase
 {
-    use LogPrintf;
-
     /**
      * Machine readable ID of sink. Preferably in lower_snake_case
      *
