@@ -96,6 +96,11 @@ class CsvToTable
     protected $processedRecs = 0;
 
     /**
+     * Dummy run: Nothing is written to db.
+     */
+    protected $isDummy = false;
+
+    /**
      * @param string $csvFile File name of CSV file to map
      * @param string $table Destination DB table to store records in.
      * @param array $uniqueCols DB columns that identifies unique records.
@@ -210,6 +215,9 @@ class CsvToTable
         $this->debug("Running import");
         $this->setupCsvReader();
         $this->feeder = new DbBulkInsert($this->table, $this->uniqueCols ? 'upsert' : 'insert');
+        if ($this->isDummy) {
+            $this->feeder->dummy();
+        }
         if ($this->uniqueCols) {
             $this->feeder->unique($this->uniqueCols);
         }
@@ -278,6 +286,15 @@ class CsvToTable
                 ))
             );
         }
+        return $this;
+    }
+
+    /**
+     * Dummy run. Nothing is written to db.
+     */
+    public function dummy(bool $isDummy = true): CsvToTable
+    {
+        $this->isDummy = $isDummy;
         return $this;
     }
 
