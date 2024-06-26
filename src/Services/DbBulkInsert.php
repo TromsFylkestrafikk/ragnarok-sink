@@ -55,6 +55,13 @@ class DbBulkInsert
     protected $recordsWritten;
 
     /**
+     * Dummy run. Dont write to db.
+     *
+     * @var bool
+     */
+    protected $isDummy;
+
+    /**
      * Number of buffered records before write.
      *
      * @var int
@@ -75,6 +82,7 @@ class DbBulkInsert
         $this->method = $method;
         $this->idColumns = [];
         $this->recordsWritten = 0;
+        $this->isDummy = false;
         $this->resetBuffer();
     }
 
@@ -119,10 +127,12 @@ class DbBulkInsert
         if (!$this->recordCount) {
             return $this;
         }
-        if ($this->method === 'upsert') {
-            DB::table($this->table)->upsert($this->records, $this->uniqueCols);
-        } else {
-            DB::table($this->table)->{$this->method}($this->records);
+        if (! $this->isDummy) {
+            if ($this->method === 'upsert') {
+                DB::table($this->table)->upsert($this->records, $this->uniqueCols);
+            } else {
+                DB::table($this->table)->{$this->method}($this->records);
+            }
         }
         $this->recordsWritten += $this->recordCount;
         $this->resetBuffer();
@@ -132,6 +142,15 @@ class DbBulkInsert
     public function getRecordsWritten()
     {
         return $this->recordsWritten;
+    }
+
+    /**
+     * Dummy run. Don't write anything to DB.
+     */
+    public function dummy(bool $isDummy = true): DbBulkInsert
+    {
+        $this->isDummy = $isDummy;
+        return $this;
     }
 
     protected function resetBuffer()

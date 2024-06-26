@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- CsvToTable and DbBulkInsert can now have `->dummy()` runs
+
 ## [0.1.0] – 2024-04-18
 ### Added
 - API for sinks to implement. CRUD for stage 1 data import.
