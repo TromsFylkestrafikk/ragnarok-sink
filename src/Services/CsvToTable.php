@@ -354,13 +354,18 @@ class CsvToTable
             Reader::BOM_UTF16_BE => 'utf-16',
             Reader::BOM_UTF32_BE => 'utf-32',
             Reader::BOM_UTF32_LE => 'utf-32',
-        ][$this->csv->getInputBOM()] ?? 'iso-8859-1';
+        ][$this->csv->getInputBOM()] ?? false;
 
         // getInputBom failes on UTF-8 with no BOM
         // extra check for utf-8 encoding if detected as iso-8859-1 (western)
-        if ($this->encoding === 'iso-8859-1') {
-            $csvContent = file_get_contents($this->csvFile);
-            $this->encoding = mb_detect_encoding($csvContent) === 'UTF-8' ? 'utf-8' : $this->encoding;
+        if (!$this->encoding) {
+            // Force mb_detect_encoding to make a selection. Not doing so causes
+            // it to wrongly select 'utf-8' in some cases when it really is
+            // iso-8859.
+            $this->encoding = strtolower(mb_detect_encoding(
+                file_get_contents($this->csvFile, length: 8 * 1024),
+                ['ASCII', 'UTF-8', 'ISO-8859-1']
+            ));
         }
 
         if ($this->encoding !== 'utf-8') {
