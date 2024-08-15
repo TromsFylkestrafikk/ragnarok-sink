@@ -213,13 +213,17 @@ class CsvToTable
     public function exec()
     {
         $this->debug("Running import");
-        $this->setupCsvReader();
         $this->feeder = new DbBulkInsert($this->table, $this->uniqueCols ? 'upsert' : 'insert');
         if ($this->isDummy) {
             $this->feeder->dummy();
         }
         if ($this->uniqueCols) {
             $this->feeder->unique($this->uniqueCols);
+        }
+
+        if (!$this->setupCsvReader()) {
+            $this->logSummary();
+            return $this;
         }
 
         $errCount = 0;
@@ -237,13 +241,6 @@ class CsvToTable
                 if ($errCount >= $this->maxRecErr) {
                     $this->error("Failed %d times. Halting further processing", $errCount);
                     $this->feeder->flush();
-                    $this->error(
-                        "%s(%d): %s\n%s",
-                        $except->getFile(),
-                        $except->getLine(),
-                        $except->getMessage(),
-                        $except->getTraceAsString()
-                    );
                     throw $except;
                 }
             }
@@ -343,11 +340,17 @@ class CsvToTable
         return $column->process($record[$csvCol]);
     }
 
-    protected function setupCsvReader()
+    protected function setupCsvReader(): bool
     {
         $this->csv = Reader::createFromPath($this->csvFile);
         $this->csv->setHeaderOffset(0);
 
+        try {
+            $this->csv->getHeader();
+        } catch (Exception $except) {
+            $this->notice("Malformed or empty csv. Won't import");
+            return false;
+        }
         $this->encoding = [
             Reader::BOM_UTF8 => 'utf-8',
             Reader::BOM_UTF16_LE => 'utf-16',
@@ -375,5 +378,6 @@ class CsvToTable
         if ($this->csvPreparator instanceof Closure) {
             call_user_func($this->csvPreparator, $this->csv);
         }
+        return true;
     }
 }

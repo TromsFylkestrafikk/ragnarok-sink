@@ -5,6 +5,10 @@
 ### Added
 - CsvToTable and DbBulkInsert can now have `->dummy()` runs
 
+### Fixed
+- CsvToTable now allows CSV files to be empty or have malformed
+  header. File is then skipped.
+
 ## [0.1.0] – 2024-04-18
 ### Added
 - API for sinks to implement. CRUD for stage 1 data import.
