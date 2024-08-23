@@ -95,29 +95,18 @@ class ChunkExtractor
     /**
      * Get all files within zip file.
      *
-     * @return mixed[]
-     */
-    public function getFiles(): array
-    {
-        if ($this->destDir === null) {
-            $this->extract();
-        }
-        $disk = $this->localFile->getDisk();
-        return array_map(fn ($item) => $disk->path($item), $disk->files($this->destDir));
-    }
-
-    /**
-     * Get all files within zip file, including files within folders.
+     * @param bool $recursive Include files within subdirectories.
      *
-     * @return array Full path to each file
+     * @return array Full path to each file.
      */
-    public function getAllFiles(): array
+    public function getFiles($recursive = false): array
     {
         if ($this->destDir === null) {
             $this->extract();
         }
         $disk = $this->localFile->getDisk();
-        return array_map(fn ($item) => $disk->path($item), $disk->allFiles($this->destDir));
+        $files = $recursive ? $disk->allFiles($this->destDir) : $disk->files($this->destDir);
+        return array_map(fn ($item) => $disk->path($item), $files);
     }
 
     public function close(): ChunkExtractor

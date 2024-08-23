@@ -4,8 +4,8 @@
 
 ### Added
 - CsvToTable and DbBulkInsert can now have `->dummy()` runs.
-- ChunkExtractor `->getAllFiles()` adds support for ZIP files
-  containing multiple directory levels.
+- ChunkExtractor `->getFiles()` now takes an optional parameter which
+  adds support for ZIP files containing multiple directory levels.
 
 ### Fixed
 - CsvToTable now allows CSV files to be empty or have malformed
