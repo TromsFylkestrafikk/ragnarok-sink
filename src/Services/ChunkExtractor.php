@@ -106,6 +106,20 @@ class ChunkExtractor
         return array_map(fn ($item) => $disk->path($item), $disk->files($this->destDir));
     }
 
+    /**
+     * Get all files within zip file, including files within folders.
+     *
+     * @return array Full path to each file
+     */
+    public function getAllFiles(): array
+    {
+        if ($this->destDir === null) {
+            $this->extract();
+        }
+        $disk = $this->localFile->getDisk();
+        return array_map(fn ($item) => $disk->path($item), $disk->allFiles($this->destDir));
+    }
+
     public function close(): ChunkExtractor
     {
         if ($this->destDir === null) {
