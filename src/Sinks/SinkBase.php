@@ -39,6 +39,8 @@ abstract class SinkBase
      * imported, not in conflict with other chunks.
      *
      * Single state sinks can at any time only have one imported chunk.
+     *
+     * @var bool
      */
     public $singleState = false;
 
@@ -48,9 +50,25 @@ abstract class SinkBase
      * Optional. This is a normal unix cron entry. e.g. '45 03 * * *' is run
      * every night at 03:45.
      *
-     * @var string
+     * @var string|null
      */
     public $cron = null;
+
+    /**
+     * Cron entry for when re-retrieval of chunks from sink should occur.
+     *
+     * This is useful to automatically re-fetch chunks from sinks that are known
+     * to be updated/modified after initial retrieval. The complementary method
+     * refetchIdRange() needs to be implemented too. If the sinks are modified,
+     * they are automatically re-imported as well.
+     *
+     * Keep this unset if no such re-fetch mechanism is required.
+     *
+     * @see SinkBase::refetchIdRange().
+     *
+     * @var string|null.
+     */
+    public $cronRefetch = null;
 
     /**
      * Filename for sink documentation, defaults to SINK.md
@@ -169,6 +187,18 @@ abstract class SinkBase
         //     $hits = preg_match('|(?P<date>\d{4}-\d{2}-\d{2})\.zip$|', $filename, $matches);
         //     return $hits ? $matches['date'] : null;
         // @endcode
+    }
+
+    /**
+     * Get from- and to- Chunk IDs targeted for re-fetch.
+     *
+     * This must be implemented if SinkBase::$cronRefetch is set. It must return
+     * a tuple containing the range between the first and last chunk ID that
+     * should be re-retrieved from sink.
+     */
+    public function refetchIdRange(): array
+    {
+        return [];
     }
 
     /**
