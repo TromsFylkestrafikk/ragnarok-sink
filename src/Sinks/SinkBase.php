@@ -71,6 +71,28 @@ abstract class SinkBase
     public $cronRefetch = null;
 
     /**
+     * Cron entry for when re-retrieval and import of chunks from sink should occur.
+     *
+     * This is useful to automatically re-fetch chunks from sinks that are known
+     * to be updated/modified after initial retrieval. The complementary method
+     * refetchAndImportIdRange($range) needs to be implemented too. If the sinks are modified,
+     * they are automatically re-imported as well.
+     *
+     * Keep this as empty array if no such re-fetch mechanism is required.
+     *
+     * @example
+     *    [
+     *       '0 4 * * *' => 'last_7_days',
+     *       '0 5 * * 0' => 'last_30_days',
+     *    ]
+     *
+     * @see SinkBase::refetchAndImportIdRange(string $range).
+     *
+     * @var [].
+     */
+    public $cronRefetchAndImport = [];
+
+    /**
      * Filename for sink documentation, defaults to SINK.md
      *
      * It is case sensitive. Override in sink implementation if the needed.
@@ -197,6 +219,26 @@ abstract class SinkBase
      * should be re-retrieved from sink.
      */
     public function refetchIdRange(): array
+    {
+        return [];
+    }
+
+    /**
+     * Get from- and to- Chunk IDs targeted for re-fetch and import for spesific range.
+     *
+     * This must be implemented if SinkBase::$cronRefetchAndImport is set. It must return
+     * a tuple containing the range between the first and last chunk ID that
+     * should be re-retrieved from sink.
+     *
+     * @example
+     *   if($range === 'last_7_days') {
+     *      // return from- and to- chunk IDs for last 7 days
+     *      return [$fromId, $toId];
+     *   }
+     *
+     * @param string $range The range identifier as specified in the cronRefetchAndImport array key.
+     */
+    public function refetchAndImportIdRange(string $range): array
     {
         return [];
     }
