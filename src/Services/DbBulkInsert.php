@@ -66,7 +66,7 @@ class DbBulkInsert
      *
      * @var int
      */
-    protected $bufferSize = 1000;
+    protected $bufferSize = 500;
 
     public function __construct(string $table, $method = 'insert')
     {
